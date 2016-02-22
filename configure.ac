@@ -4,7 +4,7 @@ dnl configure.ac
 dnl
 dnl This file is part of bino, a 3D video player.
 dnl
-dnl Copyright (C) 2010, 2011, 2012, 2013, 2014
+dnl Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2016
 dnl Martin Lambers <marlam@marlam.de>
 dnl Frédéric Devernay <Frederic.Devernay@inrialpes.fr>
 dnl Binocle <http://binocle.com> (author: Olivier Letz <oletz@binocle.com>)
@@ -24,7 +24,7 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 dnl Autotools init stuff
 AC_PREREQ([2.63])
-AC_INIT([Bino], [1.6.0], [bino-list@nongnu.org], [bino], [http://bino3d.org/])
+AC_INIT([Bino], [1.6.2], [bino-list@nongnu.org], [bino], [http://bino3d.org/])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -91,7 +91,7 @@ dnl Feature checks needed by the base modules
 AC_LANG_PUSH([C])
 dnl - dbg
 AC_CHECK_FUNCS([backtrace sigaction])
-dnl - endianness
+dnl - end
 dnl AC_C_BIGENDIAN
 dnl - fio
 dnl case "${target}" in *-*-mingw*) LIBS="$LIBS -lshlwapi" ;; esac
@@ -99,12 +99,7 @@ dnl AC_CHECK_FUNCS([fdatasync fnmatch fseeko ftello getpwuid link mmap posix_fad
 dnl - opt
 case "${target}" in *-*-mingw*) CPPFLAGS="$CPPFLAGS -D_BSD_SOURCE" ;; esac
 AC_CHECK_DECLS([optreset], [], [], [#include <getopt.h>])
-dnl - str
-AM_ICONV([])
-AC_CHECK_FUNCS([nl_langinfo vasprintf wcswidth])
-dnl - sys
-dnl AC_CHECK_FUNCS([nanosleep sysconf sched_yield])
-dnl - thread
+dnl - pth
 AC_MSG_CHECKING([for GCC atomic builtins])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
     [[int b, x = 0; b = __sync_bool_compare_and_swap(&x, 0, 1);]])],
@@ -121,7 +116,17 @@ LDFLAGS_bak="$LDFLAGS"
 CPPFLAGS="-pthread $CPPFLAGS"
 LDFLAGS="-pthread $LDFLAGS"
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])], [], [CPPFLAGS="$CPPFLAGS_bak"; LDFLAGS="$LDFLAGS_bak"])
-dnl - timer
+dnl - str
+AM_ICONV([])
+AC_CHECK_FUNCS([nl_langinfo vasprintf wcswidth])
+AC_CHECK_TYPES([int128_t, uint128_t], [], [], [[#include <cstdint>]])
+AC_CHECK_TYPES([__int128, unsigned __int128])
+AC_CHECK_TYPES([__float128])
+AC_SEARCH_LIBS([strtoflt128], [quadmath])
+dnl TODO: define LONG_DOUBLE_IS_IEEE_754_QUAD on systems where this is true
+dnl - sys
+dnl AC_CHECK_FUNCS([nanosleep sysconf sched_yield])
+dnl - tmr
 AC_SEARCH_LIBS([clock_gettime], [rt])
 AC_CHECK_FUNCS([clock_gettime])
 AC_LANG_POP([C])
@@ -192,11 +197,11 @@ fi
 dnl Qt
 qt_version=""
 AC_ARG_WITH([qt-version],
-    [AS_HELP_STRING([--with-qt-version], [Choose Qt version. Currently 4 or 5; 4 is the default.])],
-    [qt_version="$withval"], [qt_version="4"])
+    [AS_HELP_STRING([--with-qt-version], [Choose Qt version. Currently 4 or 5; 5 is the default.])],
+    [qt_version="$withval"], [qt_version="5"])
 if test "$qt_version" != "4" -a "$qt_version" != "5"; then
-    AC_MSG_WARN([unknown Qt version requested, falling back to Qt 4.])
-    qt_version="4"
+    AC_MSG_WARN([unknown Qt version requested, falling back to Qt 5.])
+    qt_version="5"
 fi
 AC_ARG_VAR([RCC], [rcc command])
 AC_ARG_VAR([MOC], [moc command])
@@ -250,12 +255,12 @@ else
     if test -z "$MOC"; then
         AC_CHECK_TOOLS([MOC], [moc-qt5 moc])
     fi
-    dnl Qt5 on Linux requires -fPIE / -pie with gcc, but does not record this fact
+    dnl Qt5 on Linux requires -fPIC / -pie with gcc, but does not record this fact
     dnl in the pkg-config files (which is a bug in my opinion). Work around that.
-    AC_MSG_CHECKING([whether Qt needs -fPIE and -pie])
+    AC_MSG_CHECKING([whether Qt needs -fPIC and -pie])
     if test -n "`$PKG_CONFIG --variable=qt_config Qt5Core | $GREP reduce_relocations`"; then
         AC_MSG_RESULT([yes])
-        CXXFLAGS="$CXXFLAGS -fPIE"
+        CXXFLAGS="$CXXFLAGS -fPIC"
         LDFLAGS="$LDFLAGS -pie"
     else
         AC_MSG_RESULT([no])
@@ -348,26 +353,31 @@ dnl and ignore a failure.
 PKG_CHECK_MODULES([libgl], [gl >= 0.0], [HAVE_LIBGL=1], [HAVE_LIBGL=0])
 
 dnl LIRC
-LIBLIRCCLIENT_PKGCONFIG_VERSION="\"\""
-AC_ARG_WITH([liblircclient],
-    [AS_HELP_STRING([--without-liblircclient], [Disable remote control support via liblircclient (enabled by default)])],
+LIRC_PKGCONFIG_VERSION="\"\""
+AC_ARG_WITH([lirc],
+    [AS_HELP_STRING([--without-lirc], [Disable remote control support via lirc (enabled by default)])],
     [if test "$withval" = "yes"; then lirc="yes"; else lirc="no"; fi], [lirc="yes"])
 if test "$lirc" = "yes"; then
-    PKG_CHECK_MODULES([liblircclient], [liblircclient0 >= 0.0], [HAVE_LIBLIRCCLIENT=1], [HAVE_LIBLIRCCLIENT=0])
-    if test "$HAVE_LIBLIRCCLIENT" != "1"; then
-        AC_MSG_WARN([optional library liblircclient not found:])
-        AC_MSG_WARN([$liblircclient_PKG_ERRORS])
-        AC_MSG_WARN([liblircclient is provided by LIRC; Debian package: liblircclient-dev])
-	lirc="no"
+    PKG_CHECK_MODULES([lirc], [lirc >= 0.0], [HAVE_LIRC=1], [HAVE_LIRC=0])
+    if test "$HAVE_LIRC" != "1"; then
+        PKG_CHECK_MODULES([lirc], [liblircclient0 >= 0.0], [HAVE_LIRC=1], [HAVE_LIRC=0])
+        if test "$HAVE_LIRC" != "1"; then
+            AC_MSG_WARN([optional library lirc not found:])
+            AC_MSG_WARN([$lirc_PKG_ERRORS])
+            AC_MSG_WARN([lirc is provided by LIRC; Debian package: liblircclient-dev])
+            lirc="no"
+        else
+            LIRC_PKGCONFIG_VERSION="\"`$PKG_CONFIG --modversion liblircclient0`\""
+        fi
     else
-        LIBLIRCCLIENT_PKGCONFIG_VERSION="\"`$PKG_CONFIG --modversion liblircclient0`\""
+        LIRC_PKGCONFIG_VERSION="\"`$PKG_CONFIG --modversion lirc`\""
     fi
 else
-    HAVE_LIBLIRCCLIENT=0
+    HAVE_LIRC=0
 fi
-AC_DEFINE_UNQUOTED([HAVE_LIBLIRCCLIENT], [$HAVE_LIBLIRCCLIENT], [Have liblircclient?])
-AC_DEFINE_UNQUOTED([LIBLIRCCLIENT_PKGCONFIG_VERSION], [$LIBLIRCCLIENT_PKGCONFIG_VERSION], [liblircclient version])
-AM_CONDITIONAL([HAVE_LIBLIRCCLIENT], [test "$HAVE_LIBLIRCCLIENT" = "1"])
+AC_DEFINE_UNQUOTED([HAVE_LIRC], [$HAVE_LIRC], [Have lirc?])
+AC_DEFINE_UNQUOTED([LIRC_PKGCONFIG_VERSION], [$LIRC_PKGCONFIG_VERSION], [lirc version])
+AM_CONDITIONAL([HAVE_LIRC], [test "$HAVE_LIRC" = "1"])
 
 dnl Icon and Menu tools. It is ok if these are missing.
 GTK_UPDATE_ICON_CACHE=""
@@ -388,7 +398,7 @@ if test "$am_cv_func_iconv" != "yes" \
     -o "$HAVE_LIBGLEWMX" != "1" \
     -o \( "$equalizer" = "yes" -a "$HAVE_LIBEQUALIZER" != "1" \) \
     -o \( "$xnvctrl" = "yes" -a "$HAVE_LIBXNVCTRL" != "1" \) \
-    -o \( "$lirc" = "yes" -a "$HAVE_LIBLIRCCLIENT" != "1" \) ; then
+    -o \( "$lirc" = "yes" -a "$HAVE_LIRC" != "1" \) ; then
     AC_MSG_ERROR([One or more libraries were not found. See messages above.])
 fi
 
@@ -407,4 +417,4 @@ echo "Configuration:"
 echo "NLS:                      $USE_NLS"
 echo "Equalizer:                $equalizer"
 echo "NVIDIA Quadro SDI output: $xnvctrl"
-echo "liblircclient:            $lirc"
+echo "lirc:                     $lirc"

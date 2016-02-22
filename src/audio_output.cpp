@@ -1,7 +1,7 @@
 /*
  * This file is part of bino, a 3D video player.
  *
- * Copyright (C) 2010, 2011, 2012, 2013
+ * Copyright (C) 2010, 2011, 2012, 2013, 2015
  * Martin Lambers <marlam@marlam.de>
  * Gabriele Greco <gabrielegreco@gmail.com>
  *
@@ -23,17 +23,17 @@
 
 #include <limits>
 
-#include "gettext.h"
-#define _(string) gettext(string)
-
 #include "audio_output.h"
 #include "lib_versions.h"
 
-#include "exc.h"
-#include "str.h"
-#include "msg.h"
-#include "timer.h"
-#include "dbg.h"
+#include "base/exc.h"
+#include "base/str.h"
+#include "base/msg.h"
+#include "base/tmr.h"
+#include "base/dbg.h"
+
+#include "base/gettext.h"
+#define _(string) gettext(string)
 
 
 /* This code is adapted from the alffmpeg.c example available here:
@@ -41,7 +41,31 @@
 
 // These number should fit for most formats; see comments in the alffmpeg.c example.
 const size_t audio_output::_num_buffers = 3;
-const size_t audio_output::_buffer_size = 20160 * 2;
+// const size_t audio_output::_buffer_size = 20160 * 2;
+//
+// Actually, the comments from http://kcat.strangesoft.net/alffmpeg.c [9Apr15] say:
+//
+//  /* Define the number of buffers and buffer size (in bytes) to use. 3 buffers is
+//   * a good amount (one playing, one ready to play, another being filled). 32256
+//   * is a good length per buffer, as it fits 1, 2, 4, 6, 7, 8, 12, 14, 16, 24,
+//   * 28, and 32 bytes-per-frame sizes. */
+//   #define NUM_BUFFERS 3
+//   #define BUFFER_SIZE 32256
+//
+// Doh. But i want 22. Let's start with 32*22 = 704.  Now 32767 / 704 = 46.544034,
+// 45 is better for factors than 46. so how about: 704*45 = 31680
+// wow. look at this: http://www.2dtx.com/factors/factors31680factors31683.html
+//   Factors of 31680=1,2,3,4,5,6,8,9,10,11,12,15,16,18,20,22,24,30,32,33,36,40,44,45,48,55,60,64
+//
+// const size_t audio_output::_buffer_size = 31680
+//
+// Hang on. Damn. no factor 7. ok. try using 6*7=42 instead. 704*42=29568.
+//   Factors of 29568 = 1,2,3,4,6,7,8,11,12,14,16,21,22,24,28,32,33,42,44,48,56,64
+// That's good for audio channel combinations, like 2.0, 5.1, 6.1, 7.1, and our 22
+// (being 2, 6, 7, 8, and 22 etc).  [ben 9Apr15]
+//
+const size_t audio_output::_buffer_size = 29568 * 22;
+
 
 audio_output::audio_output() : controller(), _initialized(false)
 {
@@ -231,13 +255,13 @@ int64_t audio_output::status(bool *need_data)
         if (timestamp != _last_timestamp)
         {
             _last_timestamp = timestamp;
-            _ext_timer_at_last_timestamp = timer::get_microseconds(timer::monotonic);
+            _ext_timer_at_last_timestamp = timer::get(timer::monotonic);
             _last_reported_timestamp = std::max(_last_reported_timestamp, timestamp);
             return _last_reported_timestamp;
         }
         else
         {
-            _last_reported_timestamp = _last_timestamp + (timer::get_microseconds(timer::monotonic) - _ext_timer_at_last_timestamp);
+            _last_reported_timestamp = _last_timestamp + (timer::get(timer::monotonic) - _ext_timer_at_last_timestamp);
             return _last_reported_timestamp;
         }
     }
@@ -274,6 +298,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
             {
                 format = alGetEnumValue("AL_FORMAT_81CHN8");
             }
+            else if (blob.channels > 8)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN8");
+            }
+            else if (blob.channels == 22)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN8");
+            }
         }
     }
     else if (blob.sample_format == audio_blob::s16)
@@ -303,6 +335,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
             else if (blob.channels == 8)
             {
                 format = alGetEnumValue("AL_FORMAT_71CHN16");
+            }
+            else if (blob.channels > 8)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN16");
+            }
+            else if (blob.channels == 22)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN16");
             }
         }
     }
@@ -335,6 +375,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
                 else if (blob.channels == 8)
                 {
                     format = alGetEnumValue("AL_FORMAT_71CHN32");
+                }
+                else if (blob.channels > 8)
+                {
+                    format = alGetEnumValue("AL_FORMAT_RME22CHN32");
+                }
+                else if (blob.channels == 22)
+                {
+                    format = alGetEnumValue("AL_FORMAT_RME22CHN32");
                 }
             }
         }
@@ -388,13 +436,30 @@ void audio_output::data(const audio_blob &blob)
         char *data = static_cast<char *>(blob.data);
         for (size_t j = 0; j < _num_buffers; j++)
         {
+msg::dbg( std::string("Initial Buffering channels: ") + str::from(blob.channels));
             _buffer_channels.push_back(blob.channels);
+msg::dbg( std::string("1 Check alGetError(): ") + str::from(alGetError()));
+
+msg::dbg( std::string("Initial Buffering sample_bits: ") + str::from(blob.sample_bits()));
             _buffer_sample_bits.push_back(blob.sample_bits());
+msg::dbg( std::string("2 Check alGetError(): ") + str::from(alGetError()));
+
+msg::dbg( std::string("Initial Buffering rate: " + str::from(blob.rate)));
             _buffer_rates.push_back(blob.rate);
+msg::dbg( std::string("3 Check alGetError(): ") + str::from(alGetError()));
+
+msg::dbg( std::string("Initial Buffering alBufferData ") +str::from(format)+" "+str::from(_buffer_size));
             alBufferData(_buffers[j], format, data, _buffer_size, blob.rate);
+msg::dbg( std::string("4 Check alGetError(): ") + str::from(alGetError()));
+
+msg::dbg( std::string("Initial Buffering alSourceQueueBuffers"));
             alSourceQueueBuffers(_source, 1, &(_buffers[j]));
+msg::dbg( std::string("5 Check alGetError(): ") + str::from(alGetError()));
+
+msg::dbg( std::string("Initial Buffering data is updated"));
             data += _buffer_size;
         }
+msg::dbg( std::string("6 Check alGetError(): ") + str::from(alGetError()));
         if (alGetError() != AL_NO_ERROR)
         {
             throw exc(_("Cannot buffer initial OpenAL data."));
@@ -440,7 +505,7 @@ int64_t audio_output::start()
     }
     _past_time = 0;
     _last_timestamp = 0;
-    _ext_timer_at_last_timestamp = timer::get_microseconds(timer::monotonic);
+    _ext_timer_at_last_timestamp = timer::get(timer::monotonic);
     _last_reported_timestamp = _last_timestamp;
     return _last_timestamp;
 }
