@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bino 0.9.2\n"
 "Report-Msgid-Bugs-To: bino-list@nongnu.org\n"
-"POT-Creation-Date: 2014-12-18 11:24+0100\n"
+"POT-Creation-Date: 2016-02-16 09:55+1100\n"
 "PO-Revision-Date: 2011-04-10 17:23+0200\n"
 "Last-Translator: Joe <cuchac@email.cz>\n"
 "Language-Team: none\n"
@@ -91,112 +91,112 @@ msgstr "Příliš málo parametrů."
 msgid "Too many arguments."
 msgstr "Příliš mnoho parametrů."
 
-#: src/base/str.cpp:269
+#: src/base/str.cpp:452
 #, c-format
 msgid "Cannot convert string to %s."
 msgstr "Nelze převést text do %s."
 
-#: src/base/str.cpp:517 src/base/str.cpp:536 src/base/str.cpp:547
-#: src/base/str.cpp:559
+#: src/base/str.cpp:986 src/base/str.cpp:1005 src/base/str.cpp:1016
+#: src/base/str.cpp:1028
 #, c-format
 msgid "Cannot convert %s to %s: %s"
 msgstr "Nelze převést %s to %s: %s"
 
-#: src/base/str.cpp:565
+#: src/base/str.cpp:1034
 #, c-format
 msgid "Cannot convert %s to %s."
 msgstr "Nelze převést %s to %s."
 
-#: src/base/thread.cpp:38 src/base/thread.cpp:48 src/base/thread.cpp:61
-#: src/base/thread.cpp:74 src/base/thread.cpp:85 src/base/thread.cpp:95
-#: src/base/thread.cpp:108 src/base/thread.cpp:116 src/base/thread.cpp:124
-#: src/base/thread.cpp:204 src/base/thread.cpp:211 src/base/thread.cpp:225
-#: src/base/thread.cpp:245
+#: src/base/pth.cpp:38 src/base/pth.cpp:48 src/base/pth.cpp:61
+#: src/base/pth.cpp:74 src/base/pth.cpp:85 src/base/pth.cpp:95
+#: src/base/pth.cpp:108 src/base/pth.cpp:116 src/base/pth.cpp:124
+#: src/base/pth.cpp:204 src/base/pth.cpp:211 src/base/pth.cpp:225
+#: src/base/pth.cpp:245
 msgid "System function failed: "
 msgstr "Systémová funkce selhala: "
 
-#: src/base/timer.cpp:63 src/base/timer.cpp:72 src/base/timer.cpp:81
+#: src/base/tmr.cpp:63 src/base/tmr.cpp:72 src/base/tmr.cpp:81
 msgid "Cannot get time."
 msgstr "Nelze získat aktuální čas."
 
-#: src/audio_output.cpp:93
+#: src/audio_output.cpp:117
 msgid "No OpenAL device available."
 msgstr "Není k dispozici žádné OpenAL zařízení."
 
-#: src/audio_output.cpp:98 src/audio_output.cpp:104
+#: src/audio_output.cpp:122 src/audio_output.cpp:128
 #, c-format
 msgid "OpenAL device '%s' is not available."
 msgstr "OpenAL zařízení '%s' není k dispozici."
 
-#: src/audio_output.cpp:98 src/lib_versions.cpp:121 src/lib_versions.cpp:159
+#: src/audio_output.cpp:122 src/lib_versions.cpp:121 src/lib_versions.cpp:159
 #: src/media_data.cpp:1207 src/media_data.cpp:1230 src/media_data.cpp:1268
 #: src/media_data.cpp:1273
 msgid "unknown"
 msgstr "neznámá"
 
-#: src/audio_output.cpp:111
+#: src/audio_output.cpp:135
 msgid "No OpenAL context available."
 msgstr "Není k dispozici žádný OpenAL kontext."
 
-#: src/audio_output.cpp:122
+#: src/audio_output.cpp:146
 msgid "Cannot create OpenAL buffers."
 msgstr "Nelze vytvořit OpenAL buffer."
 
-#: src/audio_output.cpp:131
+#: src/audio_output.cpp:155
 msgid "Cannot create OpenAL source."
 msgstr "Nelze vytvořit OpenAL zdroj."
 
-#: src/audio_output.cpp:144
+#: src/audio_output.cpp:168
 msgid "Cannot set OpenAL source parameters."
 msgstr "Nelze nastavit parametry OpenAL."
 
-#: src/audio_output.cpp:198
+#: src/audio_output.cpp:222
 msgid "Cannot check OpenAL source state."
 msgstr "Nelze ověřit stav OpenAL zdroje."
 
-#: src/audio_output.cpp:205
+#: src/audio_output.cpp:229
 msgid "Cannot restart OpenAL source playback."
 msgstr "Nelze znovu spustit přehrávání OpeanAL zdroje."
 
-#: src/audio_output.cpp:358
+#: src/audio_output.cpp:406
 #, c-format
 msgid "No OpenAL format available for audio data format %s."
 msgstr "Neexistuje vhodný OpenAL format pro daný audio formát %s."
 
-#: src/audio_output.cpp:374
+#: src/audio_output.cpp:422
 msgid "Cannot set OpenAL audio volume."
 msgstr "Nelze nastavit hlasitost OpenAL zvuku."
 
-#: src/audio_output.cpp:400
+#: src/audio_output.cpp:465
 msgid "Cannot buffer initial OpenAL data."
 msgstr "Nelze načíst počáteční data OpenAL."
 
-#: src/audio_output.cpp:414
+#: src/audio_output.cpp:479
 msgid "Cannot buffer OpenAL data."
 msgstr "Nelze načíst OpenAL data."
 
-#: src/audio_output.cpp:439
+#: src/audio_output.cpp:504
 msgid "Cannot start OpenAL source playback."
 msgstr "Nelze začít přehrávat OpeanAL zdroj."
 
-#: src/audio_output.cpp:453
+#: src/audio_output.cpp:518
 msgid "Cannot pause OpenAL source playback."
 msgstr "Nelze přerušit přehrávání OpeanAL zdroje."
 
-#: src/audio_output.cpp:462
+#: src/audio_output.cpp:527
 msgid "Cannot unpause OpenAL source playback."
 msgstr "Nelze pokračovat v přehrávání OpeanAL zdroje."
 
-#: src/audio_output.cpp:471
+#: src/audio_output.cpp:536
 msgid "Cannot stop OpenAL source playback."
 msgstr "Nelze zastavit přehrávání OpeanAL zdroje."
 
-#: src/audio_output.cpp:482
+#: src/audio_output.cpp:547
 msgid "Cannot unqueue OpenAL source buffers."
 msgstr "Nelze odpojit buffery OpeanAL zdroje."
 
 #: src/command_file.cpp:63 src/command_file.cpp:79 src/command_file.cpp:125
-#: src/main.cpp:402 src/media_object.cpp:855 src/media_object.cpp:1339
+#: src/main.cpp:402 src/media_object.cpp:877 src/media_object.cpp:1362
 #: src/video_output.cpp:420
 #, c-format
 msgid "%s: %s"
@@ -282,7 +282,8 @@ msgid "%s version %s"
 msgstr "%s verze %s"
 
 #: src/main.cpp:415
-msgid "Copyright (C) 2014 the Bino developers."
+#, fuzzy
+msgid "Copyright (C) 2016 the Bino developers."
 msgstr "Copyright (C) 2014 Bino vývojáři."
 
 #: src/main.cpp:416
@@ -877,109 +878,109 @@ msgstr "Stereo režim: %s"
 msgid "%s video stream %d: Unsupported stereo layout %s."
 msgstr "%s video stopa %d: Nepodporovaný stereo režim %s."
 
-#: src/media_object.cpp:725
+#: src/media_object.cpp:727
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with %d channels."
 msgstr "%s zvuková stopa %d: Nemohu přehrát zvukovou stopu s %d kanály."
 
-#: src/media_object.cpp:759
+#: src/media_object.cpp:781
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with sample format %s."
 msgstr "%s zvuková stopa %d: Nemohu přehrát zvukovou stopu ve formátu %s."
 
-#: src/media_object.cpp:830
+#: src/media_object.cpp:852
 #, c-format
 msgid "No support available for %s device."
 msgstr "Zařízení %s není podporováno."
 
-#: src/media_object.cpp:831
+#: src/media_object.cpp:853
 msgid "Firewire"
 msgstr "Firewire"
 
-#: src/media_object.cpp:832
+#: src/media_object.cpp:854
 msgid "X11"
 msgstr "X11"
 
-#: src/media_object.cpp:833
+#: src/media_object.cpp:855
 msgid "default"
 msgstr "výchozí"
 
-#: src/media_object.cpp:866
+#: src/media_object.cpp:888
 #, c-format
 msgid "%s: Cannot read stream info: %s"
 msgstr "%s: Nemohu přečíst informace o stopě: %s"
 
-#: src/media_object.cpp:914
+#: src/media_object.cpp:936
 #, c-format
 msgid "%s stream %d: Cannot open %s: %s"
 msgstr "%s stopa %d: Nemohu otevřít %s: %s"
 
-#: src/media_object.cpp:915
+#: src/media_object.cpp:937
 msgid "video codec"
 msgstr "video kodek"
 
-#: src/media_object.cpp:916
+#: src/media_object.cpp:938
 msgid "audio codec"
 msgstr "zvukový kodek"
 
-#: src/media_object.cpp:917
+#: src/media_object.cpp:939
 msgid "subtitle codec"
 msgstr "kodek titulků"
 
-#: src/media_object.cpp:918
+#: src/media_object.cpp:940
 msgid "data"
 msgstr "data"
 
-#: src/media_object.cpp:919
+#: src/media_object.cpp:941
 msgid "codec not supported"
 msgstr "kodek není podporován"
 
-#: src/media_object.cpp:929
+#: src/media_object.cpp:951
 #, c-format
 msgid "%s video stream %d: Invalid frame size."
 msgstr "%s video stopa %d: Špatná velikost obrazu."
 
-#: src/media_object.cpp:982
+#: src/media_object.cpp:1004
 #, c-format
 msgid "%s video stream %d: Cannot initialize conversion context."
 msgstr "%s video stopa %d: Nemohu vytvořit conversion context."
 
-#: src/media_object.cpp:1045
+#: src/media_object.cpp:1067
 #, c-format
 msgid "Video stream %d: %s / %s, %g seconds"
 msgstr "Video stopa %d: %s / %s, %g sekund"
 
-#: src/media_object.cpp:1049
+#: src/media_object.cpp:1071
 #, c-format
 msgid "Using up to %d threads for decoding."
 msgstr "Využívám až %d vláken pro dekódování."
 
-#: src/media_object.cpp:1054
+#: src/media_object.cpp:1076
 #, c-format
 msgid "Audio stream %d: %s / %s, %g seconds"
 msgstr "Zvuková stopa %d: %s / %s, %g sekund"
 
-#: src/media_object.cpp:1061
+#: src/media_object.cpp:1083
 #, c-format
 msgid "Subtitle stream %d: %s / %s, %g seconds"
 msgstr "Titulky %d: %s / %s, %g sekund"
 
-#: src/media_object.cpp:1068
+#: src/media_object.cpp:1090
 msgid "No usable streams."
 msgstr "Žádná použitelná stopa."
 
-#: src/media_object.cpp:1355 src/media_object.cpp:1385
-#: src/media_object.cpp:1415
+#: src/media_object.cpp:1378 src/media_object.cpp:1408
+#: src/media_object.cpp:1438
 #, c-format
 msgid "%s: Cannot duplicate packet."
 msgstr "%s: Nemohu duplikovat paket."
 
-#: src/media_object.cpp:1508
+#: src/media_object.cpp:1531
 #, c-format
 msgid "%s video stream %d: Dropping %dx%d frame"
 msgstr "%s video stopa %d: Zahazuji %dx%d snímek."
 
-#: src/media_object.cpp:1996
+#: src/media_object.cpp:2041
 #, c-format
 msgid "%s: Seeking failed."
 msgstr "%s: Vyhledávání selhalo."
