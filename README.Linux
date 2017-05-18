@@ -30,6 +30,8 @@ The configure command can become quite complex. For example: at the UTS Data Are
 bino is built with equalizer (and a custom version of OpenAL).  Shell variables make
 the subsequent configure command a little easier. Obviously change the dir names to
 match your installation, and don't type the '$' which represents the shell prompt).
+
+
 During this build, everything sat in a filesystem called /touro/dev
 Hopefully this might help if you're building bino with Equalizer and OpenAL.
 The qtchooser command is not necessary. It's just a check.
@@ -52,9 +54,6 @@ $   ./configure --prefix=${HERE}/install          \
   --with-equalizer                                \
   libEqualizer_CFLAGS=-I${EQ}/include             \
   libEqualizer_LIBS=-L${EQ}/lib                   \
-  --with-xnvctrl                                  \
-  xnvctrl_CFLAGS=-I/usr/include/NVCtrl            \
-  xnvctrl_LDFLAGS=-L/usr/lib64                    \
   libopenal_CFLAGS=-I${OPENAL}/include/AL         \
   libopenal_LIBS=-L${OPENAL}/lib                  \
 
