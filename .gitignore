@@ -33,4 +33,4 @@ src/qt_resources.qrc
 src/video_output_color.fs.glsl.h
 src/video_output_render.fs.glsl.h
 stamp-h1
-
+/README.da
