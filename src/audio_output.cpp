@@ -43,23 +43,23 @@
 const size_t audio_output::_num_buffers = 3;
 // const size_t audio_output::_buffer_size = 20160 * 2;
 //
-// Actually, the comments from http://kcat.strangesoft.net/alffmpeg.c [9Apr15] say:
+// comments at http://kcat.strangesoft.net/alffmpeg.c [9Apr15] say:
 //
-//  /* Define the number of buffers and buffer size (in bytes) to use. 3 buffers is
-//   * a good amount (one playing, one ready to play, another being filled). 32256
-//   * is a good length per buffer, as it fits 1, 2, 4, 6, 7, 8, 12, 14, 16, 24,
-//   * 28, and 32 bytes-per-frame sizes. */
-//   #define NUM_BUFFERS 3
-//   #define BUFFER_SIZE 32256
+//   /* Define the number of buffers and buffer size (in bytes) to use. 3 buffers is
+//    * a good amount (one playing, one ready to play, another being filled). 32256
+//    * is a good length per buffer, as it fits 1, 2, 4, 6, 7, 8, 12, 14, 16, 24,
+//    * 28, and 32 bytes-per-frame sizes. */
+//    #define NUM_BUFFERS 3
+//    #define BUFFER_SIZE 32256
 //
-// Doh. i want upto 22 channels. Let's start with 32*22 = 704
+// Doh. we want upto 22 channels. Let's start with 32*22 = 704
 // Now 32767 / 704 = 46.544034,
-// 45 is better for factors than 46. so how about: 704*45 = 31680
-//
-// Hang on. Damn. no factor 7. ok. try using 6*7=42 instead. 704*42=29568.
+// 45 has more factors than 46. so how about: 704*45 = 31680
+// Hang on. Damn. 45 has no factor 7. ok. try using 6*7=42 instead. 704*42=29568.
+// Found a good one: 29568. 
 //   Factors of 29568 = 1,2,3,4,6,7,8,11,12,14,16,21,22,24,28,32,33,42,44,48,56,64
 // That's good for audio channel combinations, like 2.0, 5.1, 6.1, 7.1, and our 22
-// (being 2, 6, 7, 8, and 22 etc).  [ben 9Apr15]
+// (being 2, 6, 7, 8, and 22 etc).  [ben simons 9Apr2015]
 //
 const size_t audio_output::_buffer_size = 29568 * 22;
 

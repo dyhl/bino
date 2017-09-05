@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
     msg::set_columns_from_env();
     dbg::init_crashhandler();
 
+<<<<<<< HEAD
 
 
     // Moved Qt initialisation until after command-line handling.
@@ -210,6 +211,24 @@ int main(int argc, char *argv[])
 
 
 
+=======
+    /* Initialization: Qt */
+    QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
+#ifdef Q_WS_X11
+    // This only works with Qt4; Qt5 ignores the 'have_display' flag.
+    const char *display = getenv("DISPLAY");
+    bool have_display = (display && display[0] != '\0');
+#else
+    bool have_display = true;
+#endif
+#if QT_VERSION < 0x050000
+    qInstallMsgHandler(qt_msg_handler);
+#else
+    qInstallMessageHandler(qt_msg_handler);
+#endif
+
+    // qt_app was set here, but is now moved to after the options are processed
+>>>>>>> f7bfc97121e71fc64431a9fe22c7da9385a8ca99
 
     /* Command line handling */
     std::vector<opt::option *> options;
@@ -661,6 +680,28 @@ printf("dispatch_equalizer is %d\n", dispatch_equalizer);
             dispatch_gui, have_display, dispatch_log_level,
             dispatch_benchmark, dispatch_swap_interval);
 
+
+    // this section has been moved to after the options are processed.
+    // Qt inheritance looks like this:
+    // QObject => QCoreApplication => QGuiApplication => QApplication
+    // So let's define qt_app to be a QApplication 
+    QApplication *qt_app;
+    if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
+	QCoreApplication *qt_app = new QCoreApplication(argc, argv, have_display);
+    } else {
+	QApplication *qt_app = new QApplication(argc, argv, have_display);
+    }
+#if QT_VERSION < 0x050000
+    // Make Qt4 behave like Qt5: always interpret all C strings as UTF-8.
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+#endif
+    // Qt resets locale information in the QApplication constructor. Repair that.
+    setlocale(LC_ALL, "");
+    QCoreApplication::setOrganizationName("Bino");
+    QCoreApplication::setOrganizationDomain("bino3d.org");
+    QCoreApplication::setApplicationName(PACKAGE_NAME);
+
+
     /* List audio devices and exit, if requested */
     if (list_audio_devices.value())
     {
@@ -839,9 +880,17 @@ printf("dispatch_equalizer is %d\n", dispatch_equalizer);
             msg::err(_("This version of Bino was compiled without support for Equalizer."));
 #endif
         } else {
+<<<<<<< HEAD
 	    // HACK [ben 29Jul16]
             // QApplication::exec();
             QCoreApplication::exec();
+=======
+            if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
+	        QCoreApplication::exec();
+            } else {
+                QApplication::exec();
+            }
+>>>>>>> f7bfc97121e71fc64431a9fe22c7da9385a8ca99
         }
 #if HAVE_LIRC
         lirc.deinit();
