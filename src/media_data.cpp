@@ -1204,7 +1204,7 @@ std::string audio_blob::format_info() const
 {
     /* TRANSLATORS: This is a very short string describing the audio language, channels, frequency, and bits. */
     return str::asprintf(_("%s, %d ch., %g kHz, %d bit"),
-            language.empty() ? _("unknown") : language.c_str(),
+            language.empty() ? _("unknown_language") : language.c_str(),
             channels, rate / 1e3f, sample_bits());
 }
 
@@ -1227,7 +1227,7 @@ std::string audio_blob::format_name() const
         break;
     }
     return str::asprintf("%s-%d-%d-%s",
-            language.empty() ? _("unknown") : language.c_str(),
+            language.empty() ? _("unknown_language") : language.c_str(),
             channels, rate, sample_format_name);
 }
 
@@ -1265,12 +1265,12 @@ subtitle_box::subtitle_box() :
 
 std::string subtitle_box::format_info() const
 {
-    return (language.empty() ? _("unknown") : language);
+    return (language.empty() ? _("unknown_language") : language);
 }
 
 std::string subtitle_box::format_name() const
 {
-    return (language.empty() ? _("unknown") : language);
+    return (language.empty() ? _("unknown_language") : language);
 }
 
 void subtitle_box::image_t::save(std::ostream &os) const

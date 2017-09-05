@@ -52,12 +52,9 @@ const size_t audio_output::_num_buffers = 3;
 //   #define NUM_BUFFERS 3
 //   #define BUFFER_SIZE 32256
 //
-// Doh. But i want 22. Let's start with 32*22 = 704.  Now 32767 / 704 = 46.544034,
+// Doh. i want upto 22 channels. Let's start with 32*22 = 704
+// Now 32767 / 704 = 46.544034,
 // 45 is better for factors than 46. so how about: 704*45 = 31680
-// wow. look at this: http://www.2dtx.com/factors/factors31680factors31683.html
-//   Factors of 31680=1,2,3,4,5,6,8,9,10,11,12,15,16,18,20,22,24,30,32,33,36,40,44,45,48,55,60,64
-//
-// const size_t audio_output::_buffer_size = 31680
 //
 // Hang on. Damn. no factor 7. ok. try using 6*7=42 instead. 704*42=29568.
 //   Factors of 29568 = 1,2,3,4,6,7,8,11,12,14,16,21,22,24,28,32,33,42,44,48,56,64
@@ -158,6 +155,14 @@ void audio_output::init(int i)
          * "Set parameters so mono sources won't distance attenuate" */
         alSourcei(_source, AL_SOURCE_RELATIVE, AL_TRUE);
         alSourcei(_source, AL_ROLLOFF_FACTOR, 0);
+
+	/* Direct Output. This bypasses OpenAL's ambisonic 3D spatialization.
+	 * Multi-channel audio plays straight to the speakers.
+	 * Typically, the channels of a movie soundtrack are already mixed,
+	 * so we do not want OpenAL to apply additional mixing.
+	 */
+	alSourcei(_source, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
+
         if (alGetError() != AL_NO_ERROR)
         {
             alDeleteSources(1, &_source);
@@ -427,7 +432,7 @@ void audio_output::data(const audio_blob &blob)
 {
     assert(blob.data);
     ALenum format = get_al_format(blob);
-    msg::dbg(std::string("Buffering ") + str::from(blob.size) + " bytes of audio data.");
+    // msg::dbg(std::string("Buffering ") + str::from(blob.size) + " bytes of audio data.");
     if (_state == 0)
     {
         set_source_parameters();
@@ -436,30 +441,13 @@ void audio_output::data(const audio_blob &blob)
         char *data = static_cast<char *>(blob.data);
         for (size_t j = 0; j < _num_buffers; j++)
         {
-msg::dbg( std::string("Initial Buffering channels: ") + str::from(blob.channels));
             _buffer_channels.push_back(blob.channels);
-msg::dbg( std::string("1 Check alGetError(): ") + str::from(alGetError()));
-
-msg::dbg( std::string("Initial Buffering sample_bits: ") + str::from(blob.sample_bits()));
             _buffer_sample_bits.push_back(blob.sample_bits());
-msg::dbg( std::string("2 Check alGetError(): ") + str::from(alGetError()));
-
-msg::dbg( std::string("Initial Buffering rate: " + str::from(blob.rate)));
             _buffer_rates.push_back(blob.rate);
-msg::dbg( std::string("3 Check alGetError(): ") + str::from(alGetError()));
-
-msg::dbg( std::string("Initial Buffering alBufferData ") +str::from(format)+" "+str::from(_buffer_size));
             alBufferData(_buffers[j], format, data, _buffer_size, blob.rate);
-msg::dbg( std::string("4 Check alGetError(): ") + str::from(alGetError()));
-
-msg::dbg( std::string("Initial Buffering alSourceQueueBuffers"));
             alSourceQueueBuffers(_source, 1, &(_buffers[j]));
-msg::dbg( std::string("5 Check alGetError(): ") + str::from(alGetError()));
-
-msg::dbg( std::string("Initial Buffering data is updated"));
             data += _buffer_size;
         }
-msg::dbg( std::string("6 Check alGetError(): ") + str::from(alGetError()));
         if (alGetError() != AL_NO_ERROR)
         {
             throw exc(_("Cannot buffer initial OpenAL data."));

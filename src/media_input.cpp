@@ -310,7 +310,7 @@ void media_input::open(const std::vector<std::string> &urls, const device_reques
     msg::inf(4, _("Duration: %g seconds"), duration() / 1e6f);
     if (video_streams() > 0)
     {
-        msg::inf(4, _("Stereo layout: %s"), parameters::stereo_layout_to_string(
+        msg::inf(4, _("Stereo Video layout: %s"), parameters::stereo_layout_to_string(
                     video_frame_template().stereo_layout, video_frame_template().stereo_layout_swap).c_str());
     }
 }

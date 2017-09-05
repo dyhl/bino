@@ -320,7 +320,7 @@ public:
 
     // Description of the content
     std::string language;               // Language information (empty if unknown)
-    int channels;                       // 1 (mono), 2 (stereo), 4 (quad), 6 (5:1), 7 (6:1), or 8 (7:1)
+    int channels;                       // 1 (mono), 2 (stereo), 4 (quad), 6 (5:1), 7 (6:1), 8 (7:1), or 22 (RME22)
     int rate;                           // Samples per second
     sample_format_t sample_format;      // Sample format
 
