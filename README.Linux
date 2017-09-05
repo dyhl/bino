@@ -24,3 +24,35 @@ libXNVCtrl.a from the NVIDIA Quadro SDI SDK, and use the following configure
 options:
 $ ./configure --with-xnvctrl xnvctrl_CFLAGS="-I/sdk/include/path/" xnvctrl_LDFLAGS="-L/sdk/lib/path"
 On Ubuntu, the required files can be found in the nvidia-settings package.
+
+
+The configure command can become quite complex. For example: at the UTS Data Arena,
+bino is built with equalizer (and a custom version of OpenAL).  Shell variables make
+the subsequent configure command a little easier. Obviously change the dir names to
+match your installation, and don't type the '$' which represents the shell prompt).
+During this build, everything sat in a filesystem called /touro/dev
+Hopefully this might help if you're building bino with Equalizer and OpenAL.
+The qtchooser command is not necessary. It's just a check.
+
+$ HERE=/touro/dev/bino
+$ EQ=/touro/dev/equalizer/v1.10/install
+$ OPENAL=/touro/dev/openal/63n/openal-soft/install
+$ export QT_SELECT=5
+$ qtchooser -print-env
+$ export LD_LIBRARY_PATH=/touro/dev/equalizer/v1.10/install/lib
+
+Then there is this multi-line configure command, split over many lines by back-slashes:
+
+$   ./configure --prefix=${HERE}/install          \
+  CXXFLAGS=-std=c++11                             \
+  LDFLAGS="-L${EQ}/lib -L${OPENAL}/lib            \
+  -lopenal -lXext -lEqualizer -lEqualizerFabric   \
+  -lEqualizerServer -lDeflect -lLunchbox          \
+  -lCollage -lPression -lServus -lhwsd"           \
+  --with-equalizer                                \
+  libEqualizer_CFLAGS=-I${EQ}/include             \
+  libEqualizer_LIBS=-L${EQ}/lib                   \
+  libopenal_CFLAGS=-I${OPENAL}/include/AL         \
+  libopenal_LIBS=-L${OPENAL}/lib                  \
+
+
