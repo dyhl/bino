@@ -199,36 +199,11 @@ int main(int argc, char *argv[])
     msg::set_columns_from_env();
     dbg::init_crashhandler();
 
-<<<<<<< HEAD
-
 
     // Moved Qt initialisation until after command-line handling.
     // We need a different Qt init depending on whether we're using Equalizer
     // which we learn from the command-line args. [ben 1AUG16]
 
-
-
-
-
-
-=======
-    /* Initialization: Qt */
-    QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
-#ifdef Q_WS_X11
-    // This only works with Qt4; Qt5 ignores the 'have_display' flag.
-    const char *display = getenv("DISPLAY");
-    bool have_display = (display && display[0] != '\0');
-#else
-    bool have_display = true;
-#endif
-#if QT_VERSION < 0x050000
-    qInstallMsgHandler(qt_msg_handler);
-#else
-    qInstallMessageHandler(qt_msg_handler);
-#endif
-
-    // qt_app was set here, but is now moved to after the options are processed
->>>>>>> f7bfc97121e71fc64431a9fe22c7da9385a8ca99
 
     /* Command line handling */
     std::vector<opt::option *> options;
@@ -599,14 +574,6 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(qt_msg_handler);
 #endif
 
-    // Equalizer needs QCoreApplication() whereas the single app
-    // version wants QApplication() in order to get QWidgets  [ben 29Jul16]
-    QObject *qt_app;
-printf("dispatch_equalizer is %d\n", dispatch_equalizer);
-    if ( dispatch_equalizer == true )
-        qt_app = new QCoreApplication(argc, argv, have_display);
-    else
-        qt_app = new QApplication(argc, argv, have_display);
 
 
 #if QT_VERSION < 0x050000
@@ -880,17 +847,11 @@ printf("dispatch_equalizer is %d\n", dispatch_equalizer);
             msg::err(_("This version of Bino was compiled without support for Equalizer."));
 #endif
         } else {
-<<<<<<< HEAD
-	    // HACK [ben 29Jul16]
-            // QApplication::exec();
-            QCoreApplication::exec();
-=======
-            if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
-	        QCoreApplication::exec();
-            } else {
-                QApplication::exec();
-            }
->>>>>>> f7bfc97121e71fc64431a9fe22c7da9385a8ca99
+			if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
+				QCoreApplication::exec();
+			} else {
+				QApplication::exec();
+			}
         }
 #if HAVE_LIRC
         lirc.deinit();
