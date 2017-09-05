@@ -881,7 +881,7 @@ void media_object::open(const std::string &url, const device_request &dev_reques
     if (_is_device)
     {
         // For a camera device, do not read ahead multiple packets, to avoid a startup delay.
-        _ffmpeg->format_ctx->max_analyze_duration2 = 0;
+        _ffmpeg->format_ctx->max_analyze_duration = 0;
     }
     if ((e = avformat_find_stream_info(_ffmpeg->format_ctx, NULL)) < 0)
     {
