@@ -41,7 +41,28 @@
 
 // These number should fit for most formats; see comments in the alffmpeg.c example.
 const size_t audio_output::_num_buffers = 3;
-const size_t audio_output::_buffer_size = 20160 * 2;
+// const size_t audio_output::_buffer_size = 20160 * 2;
+//
+// Actually, the comments from http://kcat.strangesoft.net/alffmpeg.c [9Apr15] say:
+//
+//  /* Define the number of buffers and buffer size (in bytes) to use. 3 buffers is
+//   * a good amount (one playing, one ready to play, another being filled). 32256
+//   * is a good length per buffer, as it fits 1, 2, 4, 6, 7, 8, 12, 14, 16, 24,
+//   * 28, and 32 bytes-per-frame sizes. */
+//   #define NUM_BUFFERS 3
+//   #define BUFFER_SIZE 32256
+//
+// Doh. i want upto 22 channels. Let's start with 32*22 = 704
+// Now 32767 / 704 = 46.544034,
+// 45 is better for factors than 46. so how about: 704*45 = 31680
+//
+// Hang on. Damn. no factor 7. ok. try using 6*7=42 instead. 704*42=29568.
+//   Factors of 29568 = 1,2,3,4,6,7,8,11,12,14,16,21,22,24,28,32,33,42,44,48,56,64
+// That's good for audio channel combinations, like 2.0, 5.1, 6.1, 7.1, and our 22
+// (being 2, 6, 7, 8, and 22 etc).  [ben 9Apr15]
+//
+const size_t audio_output::_buffer_size = 29568 * 22;
+
 
 audio_output::audio_output() : controller(), _initialized(false)
 {
@@ -134,6 +155,14 @@ void audio_output::init(int i)
          * "Set parameters so mono sources won't distance attenuate" */
         alSourcei(_source, AL_SOURCE_RELATIVE, AL_TRUE);
         alSourcei(_source, AL_ROLLOFF_FACTOR, 0);
+
+	/* Direct Output. This bypasses OpenAL's ambisonic 3D spatialization.
+	 * Multi-channel audio plays straight to the speakers.
+	 * Typically, the channels of a movie soundtrack are already mixed,
+	 * so we do not want OpenAL to apply additional mixing.
+	 */
+	alSourcei(_source, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
+
         if (alGetError() != AL_NO_ERROR)
         {
             alDeleteSources(1, &_source);
@@ -274,6 +303,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
             {
                 format = alGetEnumValue("AL_FORMAT_81CHN8");
             }
+            else if (blob.channels > 8)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN8");
+            }
+            else if (blob.channels == 22)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN8");
+            }
         }
     }
     else if (blob.sample_format == audio_blob::s16)
@@ -303,6 +340,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
             else if (blob.channels == 8)
             {
                 format = alGetEnumValue("AL_FORMAT_71CHN16");
+            }
+            else if (blob.channels > 8)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN16");
+            }
+            else if (blob.channels == 22)
+            {
+                format = alGetEnumValue("AL_FORMAT_RME22CHN16");
             }
         }
     }
@@ -335,6 +380,14 @@ ALenum audio_output::get_al_format(const audio_blob &blob)
                 else if (blob.channels == 8)
                 {
                     format = alGetEnumValue("AL_FORMAT_71CHN32");
+                }
+                else if (blob.channels > 8)
+                {
+                    format = alGetEnumValue("AL_FORMAT_RME22CHN32");
+                }
+                else if (blob.channels == 22)
+                {
+                    format = alGetEnumValue("AL_FORMAT_RME22CHN32");
                 }
             }
         }
@@ -379,7 +432,7 @@ void audio_output::data(const audio_blob &blob)
 {
     assert(blob.data);
     ALenum format = get_al_format(blob);
-    msg::dbg(std::string("Buffering ") + str::from(blob.size) + " bytes of audio data.");
+    // msg::dbg(std::string("Buffering ") + str::from(blob.size) + " bytes of audio data.");
     if (_state == 0)
     {
         set_source_parameters();

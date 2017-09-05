@@ -718,7 +718,9 @@ void media_object::set_audio_blob_template(int index)
         audio_blob_template.language = tag->value;
     }
     if (audio_codec_ctx->channels < 1
-            || audio_codec_ctx->channels > 8
+            // || audio_codec_ctx->channels > 8
+            // || audio_codec_ctx->channels > 16
+            || audio_codec_ctx->channels > 22	// allow for RME22
             || audio_codec_ctx->channels == 3
             || audio_codec_ctx->channels == 5)
     {
@@ -731,21 +733,37 @@ void media_object::set_audio_blob_template(int index)
             || audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_U8P)
     {
         audio_blob_template.sample_format = audio_blob::u8;
+	if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_U8)
+		msg::dbg( "Audio is Interleaved AV_SAMPLE_FMT_U8");
+	else if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_U8P)
+		msg::dbg( "Audio is Planar AV_SAMPLE_FMT_U8P");
     }
     else if (audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S16
             || audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S16P)
     {
         audio_blob_template.sample_format = audio_blob::s16;
+	if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S16)
+		msg::dbg( "Audio is Interleaved AV_SAMPLE_FMT_S16");
+	else if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S16P)
+		msg::dbg( "Audio is Planar AV_SAMPLE_FMT_S16P");
     }
     else if (audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_FLT
             || audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_FLTP)
     {
         audio_blob_template.sample_format = audio_blob::f32;
+	if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_FLT)
+		msg::dbg( "Audio is Interleaved AV_SAMPLE_FMT_FLT");
+	else if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_FLTP)
+		msg::dbg( "Audio is Planar AV_SAMPLE_FMT_FLTP");
     }
     else if (audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_DBL
             || audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_DBLP)
     {
         audio_blob_template.sample_format = audio_blob::d64;
+	if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_DBL)
+		msg::dbg( "Audio is Interleaved AV_SAMPLE_FMT_DBL");
+	else if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_DBLP)
+		msg::dbg( "Audio is Planar AV_SAMPLE_FMT_DBLP");
     }
     else if ((audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S32
                 || audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S32P)
@@ -753,6 +771,10 @@ void media_object::set_audio_blob_template(int index)
     {
         // we need to convert this to AV_SAMPLE_FMT_FLT after decoding
         audio_blob_template.sample_format = audio_blob::f32;
+	if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S32)
+		msg::dbg( "Audio is Interleaved AV_SAMPLE_FMT_S32");
+	else if( audio_codec_ctx->sample_fmt == AV_SAMPLE_FMT_S32P)
+		msg::dbg( "Audio is Planar AV_SAMPLE_FMT_S32P");
     }
     else
     {
@@ -859,7 +881,7 @@ void media_object::open(const std::string &url, const device_request &dev_reques
     if (_is_device)
     {
         // For a camera device, do not read ahead multiple packets, to avoid a startup delay.
-        _ffmpeg->format_ctx->max_analyze_duration = 0;
+        _ffmpeg->format_ctx->max_analyze_duration2 = 0;
     }
     if ((e = avformat_find_stream_info(_ffmpeg->format_ctx, NULL)) < 0)
     {
@@ -1287,7 +1309,8 @@ void read_thread::run()
         // For files, we often want to read ahead to avoid i/o waits. For devices, we do not want to read
         // ahead to avoid latency.
         const size_t video_stream_low_threshold = (_is_device ? 1 : 2);         // Often, 1 packet results in one video frame
-        const size_t audio_stream_low_threshold = (_is_device ? 1 : 5);         // Often, 3-4 packets are needed for one buffer fill
+        // const size_t audio_stream_low_threshold = (_is_device ? 1 : 5);         // Often, 3-4 packets are needed for one buffer fill
+        const size_t audio_stream_low_threshold = (_is_device ? 1 : 55);        // if it was 5 for stereo, try 5*11=55
         const size_t subtitle_stream_low_threshold = (_is_device ? 1 : 1);      // Just a guess
         bool need_another_packet = false;
         for (size_t i = 0; !need_another_packet && i < _ffmpeg->video_streams.size(); i++)
@@ -1598,6 +1621,14 @@ void audio_decode_thread::run()
     void *buffer = _ffmpeg->audio_blobs[_audio_stream].ptr();
     int64_t timestamp = std::numeric_limits<int64_t>::min();
     size_t i = 0;
+
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)
+	AVFrame *audioframe = avcodec_alloc_frame();
+#else
+	// ffmpeg notes say AVFrames should be allocated with av_frame_alloc()
+	AVFrame *audioframe = av_frame_alloc();
+#endif
+	
     while (i < size)
     {
         if (_ffmpeg->audio_buffers[_audio_stream].size() > 0)
@@ -1647,13 +1678,15 @@ void audio_decode_thread::run()
             }
 
             // Decode audio data
-            AVFrame audioframe = { { 0 } };
+            // AVFrame audioframe = { { 0 } };
+            memset( audioframe, 0, sizeof(AVFrame));
             tmppacket = packet;
             while (tmppacket.size > 0)
             {
                 int got_frame = 0;
                 int len = avcodec_decode_audio4(_ffmpeg->audio_codec_ctxs[_audio_stream],
-                        &audioframe, &got_frame, &tmppacket);
+                        // &audioframe, &got_frame, &tmppacket);
+                        audioframe, &got_frame, &tmppacket);
                 if (len < 0)
                 {
                     tmppacket.size = 0;
@@ -1668,27 +1701,35 @@ void audio_decode_thread::run()
                 int plane_size;
                 int tmpbuf_size = av_samples_get_buffer_size(&plane_size,
                         _ffmpeg->audio_codec_ctxs[_audio_stream]->channels,
-                        audioframe.nb_samples,
+                        // audioframe.nb_samples,
+                        audioframe->nb_samples,
                         _ffmpeg->audio_codec_ctxs[_audio_stream]->sample_fmt, 1);
+
+				msg::dbg( "Audio buffer size is: %d", plane_size);
+
                 if (av_sample_fmt_is_planar(_ffmpeg->audio_codec_ctxs[_audio_stream]->sample_fmt)
-                        && _ffmpeg->audio_codec_ctxs[_audio_stream]->channels > 1)
+                        && (_ffmpeg->audio_codec_ctxs[_audio_stream]->channels > 1))
                 {
                     int dummy;
                     int sample_size = av_samples_get_buffer_size(&dummy, 1, 1,
                             _ffmpeg->audio_codec_ctxs[_audio_stream]->sample_fmt, 1);
                     uint8_t *out = reinterpret_cast<uint8_t *>(&(_ffmpeg->audio_tmpbufs[_audio_stream][0]));
-                    for (int s = 0; s < audioframe.nb_samples; s++)
+                    // for (int s = 0; s < audioframe.nb_samples; s++)
+                    for (int s = 0; s < audioframe->nb_samples; s++)
                     {
                         for (int c = 0; c < _ffmpeg->audio_codec_ctxs[_audio_stream]->channels; c++)
                         {
-                            std::memcpy(out, audioframe.extended_data[c] + s * sample_size, sample_size);
+                            // std::memcpy(out, audioframe.extended_data[c] + s * sample_size, sample_size);
+                            std::memcpy(out, audioframe->extended_data[c] + s * sample_size, sample_size);
                             out += sample_size;
                         }
                     }
                 }
                 else
                 {
-                    std::memcpy(&(_ffmpeg->audio_tmpbufs[_audio_stream][0]), audioframe.extended_data[0], plane_size);
+                    // std::memcpy(&(_ffmpeg->audio_tmpbufs[_audio_stream][0]), audioframe.extended_data[0], plane_size);
+                    std::memcpy(&(_ffmpeg->audio_tmpbufs[_audio_stream][0]), audioframe->extended_data[0], plane_size);
+					msg::dbg( "did memcpy");
                 }
                 // Put it in the decoded audio data buffer
                 if (_ffmpeg->audio_codec_ctxs[_audio_stream]->sample_fmt == AV_SAMPLE_FMT_S32)
@@ -1731,6 +1772,10 @@ void audio_decode_thread::run()
     _blob.data = _ffmpeg->audio_blobs[_audio_stream].ptr();
     _blob.size = _ffmpeg->audio_blobs[_audio_stream].size();
     _blob.presentation_time = handle_timestamp(timestamp);
+
+    // maybe free audioframe now
+	// av_frame_free( audioframe);
+	av_free( audioframe);
 }
 
 void media_object::start_audio_blob_read(int audio_stream, size_t size)
