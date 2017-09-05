@@ -9,7 +9,12 @@
 # General Public License and is *not* in the public domain.
 #
 # Origin: gettext-0.19
-GETTEXT_MACRO_VERSION = 0.19
+## GETTEXT_MACRO_VERSION = 0.19
+#
+# Gettext version 0.19 is still unstable. Try 0.18
+# http://packages.gentoo.org/package/sys-devel/gettext
+#
+GETTEXT_MACRO_VERSION = 0.18
 
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@

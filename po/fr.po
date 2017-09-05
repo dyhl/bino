@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bino 0.9.2\n"
 "Report-Msgid-Bugs-To: bino-list@nongnu.org\n"
-"POT-Creation-Date: 2016-02-01 19:26+0100\n"
+"POT-Creation-Date: 2016-02-16 09:55+1100\n"
 "PO-Revision-Date: 2012-06-05 10:45+0200\n"
 "Last-Translator: Frédéric Devernay <>\n"
 "Language-Team: French\n"
@@ -119,84 +119,84 @@ msgstr "Échec d'une fonction système : "
 msgid "Cannot get time."
 msgstr "Impossible d'obtenir l'heure."
 
-#: src/audio_output.cpp:93
+#: src/audio_output.cpp:117
 msgid "No OpenAL device available."
 msgstr "Aucun périphérique OpenAL disponible."
 
-#: src/audio_output.cpp:98 src/audio_output.cpp:104
+#: src/audio_output.cpp:122 src/audio_output.cpp:128
 #, c-format
 msgid "OpenAL device '%s' is not available."
 msgstr "Périphérique OpenAL '%s' non disponible."
 
-#: src/audio_output.cpp:98 src/lib_versions.cpp:121 src/lib_versions.cpp:159
+#: src/audio_output.cpp:122 src/lib_versions.cpp:121 src/lib_versions.cpp:159
 #: src/media_data.cpp:1207 src/media_data.cpp:1230 src/media_data.cpp:1268
 #: src/media_data.cpp:1273
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/audio_output.cpp:111
+#: src/audio_output.cpp:135
 msgid "No OpenAL context available."
 msgstr "Aucun contexte OpenAL disponible."
 
-#: src/audio_output.cpp:122
+#: src/audio_output.cpp:146
 msgid "Cannot create OpenAL buffers."
 msgstr "Impossible de tcréer les tampons OpenAL."
 
-#: src/audio_output.cpp:131
+#: src/audio_output.cpp:155
 msgid "Cannot create OpenAL source."
 msgstr "Impossible de créer la source OpenAL."
 
-#: src/audio_output.cpp:144
+#: src/audio_output.cpp:168
 msgid "Cannot set OpenAL source parameters."
 msgstr "Impossible de régler les paramètres de la source OpenAL."
 
-#: src/audio_output.cpp:198
+#: src/audio_output.cpp:222
 msgid "Cannot check OpenAL source state."
 msgstr "Impossible de vérifier l'état de la source OpenAL."
 
-#: src/audio_output.cpp:205
+#: src/audio_output.cpp:229
 msgid "Cannot restart OpenAL source playback."
 msgstr "Impossible de redémarrer la lecture de la source OpenAL."
 
-#: src/audio_output.cpp:358
+#: src/audio_output.cpp:406
 #, c-format
 msgid "No OpenAL format available for audio data format %s."
 msgstr "Aucun format OpenAL disponible pour le format de données audio %s."
 
-#: src/audio_output.cpp:374
+#: src/audio_output.cpp:422
 msgid "Cannot set OpenAL audio volume."
 msgstr "Impossible de régler le volume OpenAL."
 
-#: src/audio_output.cpp:400
+#: src/audio_output.cpp:465
 msgid "Cannot buffer initial OpenAL data."
 msgstr "Impossible de mettre les données initiales OpenAL en mémoire tampon."
 
-#: src/audio_output.cpp:414
+#: src/audio_output.cpp:479
 msgid "Cannot buffer OpenAL data."
 msgstr "Impossible de mettre les données OpenAL en mémoire tampon."
 
-#: src/audio_output.cpp:439
+#: src/audio_output.cpp:504
 msgid "Cannot start OpenAL source playback."
 msgstr "Impossible de démarrer la lecture de la source OpenAL."
 
-#: src/audio_output.cpp:453
+#: src/audio_output.cpp:518
 msgid "Cannot pause OpenAL source playback."
 msgstr "Impossible de mettre en pause la source OpenAL."
 
-#: src/audio_output.cpp:462
+#: src/audio_output.cpp:527
 msgid "Cannot unpause OpenAL source playback."
 msgstr "Impossible de quitter la pause de la source OpenAL."
 
-#: src/audio_output.cpp:471
+#: src/audio_output.cpp:536
 msgid "Cannot stop OpenAL source playback."
 msgstr "Impossible d'arrêter la lecture de la source OpenAL."
 
-#: src/audio_output.cpp:482
+#: src/audio_output.cpp:547
 msgid "Cannot unqueue OpenAL source buffers."
 msgstr "Impossible de vider la queue de tampons de la source OpenAL."
 
 #: src/command_file.cpp:63 src/command_file.cpp:79 src/command_file.cpp:125
-#: src/main.cpp:402 src/media_object.cpp:855 src/media_object.cpp:1339
+#: src/main.cpp:402 src/media_object.cpp:877 src/media_object.cpp:1362
 #: src/video_output.cpp:420
 #, c-format
 msgid "%s: %s"
@@ -282,7 +282,8 @@ msgid "%s version %s"
 msgstr "%s version %s"
 
 #: src/main.cpp:415
-msgid "Copyright (C) 2014 the Bino developers."
+#, fuzzy
+msgid "Copyright (C) 2016 the Bino developers."
 msgstr "Copyright (C) 2014 les développeurs Bino."
 
 #: src/main.cpp:416
@@ -876,110 +877,110 @@ msgstr "Mode stéréo : %s"
 msgid "%s video stream %d: Unsupported stereo layout %s."
 msgstr "%s flux vidéo %d : Arrangement stéréo %s non supporté."
 
-#: src/media_object.cpp:725
+#: src/media_object.cpp:727
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with %d channels."
 msgstr "%s flux audio %d : Impossible de gérer de l'audio à %d canaux."
 
-#: src/media_object.cpp:759
+#: src/media_object.cpp:781
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with sample format %s."
 msgstr ""
 "%s flux audio %d : Impossible de gérer de l'audio au format d'échantillon %s."
 
-#: src/media_object.cpp:830
+#: src/media_object.cpp:852
 #, c-format
 msgid "No support available for %s device."
 msgstr "Périphérique %s non supporté."
 
-#: src/media_object.cpp:831
+#: src/media_object.cpp:853
 msgid "Firewire"
 msgstr "Firewire"
 
-#: src/media_object.cpp:832
+#: src/media_object.cpp:854
 msgid "X11"
 msgstr "X11"
 
-#: src/media_object.cpp:833
+#: src/media_object.cpp:855
 msgid "default"
 msgstr "par défaut"
 
-#: src/media_object.cpp:866
+#: src/media_object.cpp:888
 #, c-format
 msgid "%s: Cannot read stream info: %s"
 msgstr "%s : Impossible de lire l'information du flux : %s"
 
-#: src/media_object.cpp:914
+#: src/media_object.cpp:936
 #, c-format
 msgid "%s stream %d: Cannot open %s: %s"
 msgstr "%s flux vidéo %d : Impossible d'ouvrir %s : %s"
 
-#: src/media_object.cpp:915
+#: src/media_object.cpp:937
 msgid "video codec"
 msgstr "codec vidéo"
 
-#: src/media_object.cpp:916
+#: src/media_object.cpp:938
 msgid "audio codec"
 msgstr "codec audio"
 
-#: src/media_object.cpp:917
+#: src/media_object.cpp:939
 msgid "subtitle codec"
 msgstr "codec de sous-titres"
 
-#: src/media_object.cpp:918
+#: src/media_object.cpp:940
 msgid "data"
 msgstr "données"
 
-#: src/media_object.cpp:919
+#: src/media_object.cpp:941
 msgid "codec not supported"
 msgstr "codec non supporté"
 
-#: src/media_object.cpp:929
+#: src/media_object.cpp:951
 #, c-format
 msgid "%s video stream %d: Invalid frame size."
 msgstr "%s flux vidéo %d : Taille de l'image invalide."
 
-#: src/media_object.cpp:982
+#: src/media_object.cpp:1004
 #, c-format
 msgid "%s video stream %d: Cannot initialize conversion context."
 msgstr "%s flux vidéo %d : Impossible d'initialiser le contexte de conversion."
 
-#: src/media_object.cpp:1045
+#: src/media_object.cpp:1067
 #, c-format
 msgid "Video stream %d: %s / %s, %g seconds"
 msgstr "Flux vidéo %d : %s / %s, %g secondes"
 
-#: src/media_object.cpp:1049
+#: src/media_object.cpp:1071
 #, c-format
 msgid "Using up to %d threads for decoding."
 msgstr "Utilisation de maximum %d threads pour le décodage."
 
-#: src/media_object.cpp:1054
+#: src/media_object.cpp:1076
 #, c-format
 msgid "Audio stream %d: %s / %s, %g seconds"
 msgstr "Flux audio %d : %s / %s, %g secondes"
 
-#: src/media_object.cpp:1061
+#: src/media_object.cpp:1083
 #, c-format
 msgid "Subtitle stream %d: %s / %s, %g seconds"
 msgstr "Flux de sous-titres %d : %s / %s, %g secondes"
 
-#: src/media_object.cpp:1068
+#: src/media_object.cpp:1090
 msgid "No usable streams."
 msgstr "Aucun flux utilisable"
 
-#: src/media_object.cpp:1355 src/media_object.cpp:1385
-#: src/media_object.cpp:1415
+#: src/media_object.cpp:1378 src/media_object.cpp:1408
+#: src/media_object.cpp:1438
 #, c-format
 msgid "%s: Cannot duplicate packet."
 msgstr "%s : Impossible de dupliquer le paquet."
 
-#: src/media_object.cpp:1508
+#: src/media_object.cpp:1531
 #, c-format
 msgid "%s video stream %d: Dropping %dx%d frame"
 msgstr "vidéo %s flux %d : Image %dx%d sautée"
 
-#: src/media_object.cpp:1996
+#: src/media_object.cpp:2041
 #, c-format
 msgid "%s: Seeking failed."
 msgstr "%s : Échec de la recherche."

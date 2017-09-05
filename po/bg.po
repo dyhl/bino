@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bino 1.4.0\n"
 "Report-Msgid-Bugs-To: bino-list@nongnu.org\n"
-"POT-Creation-Date: 2016-02-01 19:26+0100\n"
+"POT-Creation-Date: 2016-02-16 09:55+1100\n"
 "PO-Revision-Date: 2012-10-13 00:33+0200\n"
 "Last-Translator: Krasimir S. Stefanov <lokiisyourmaster@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,84 +118,84 @@ msgstr "Системната функция не можа да бъде изпъ
 msgid "Cannot get time."
 msgstr "Времето не може да бъде установено."
 
-#: src/audio_output.cpp:93
+#: src/audio_output.cpp:117
 msgid "No OpenAL device available."
 msgstr "Няма налично OpenAL устройство."
 
-#: src/audio_output.cpp:98 src/audio_output.cpp:104
+#: src/audio_output.cpp:122 src/audio_output.cpp:128
 #, c-format
 msgid "OpenAL device '%s' is not available."
 msgstr "OpenAL ustrojstwoto '%s' не е налично."
 
-#: src/audio_output.cpp:98 src/lib_versions.cpp:121 src/lib_versions.cpp:159
+#: src/audio_output.cpp:122 src/lib_versions.cpp:121 src/lib_versions.cpp:159
 #: src/media_data.cpp:1207 src/media_data.cpp:1230 src/media_data.cpp:1268
 #: src/media_data.cpp:1273
 msgid "unknown"
 msgstr "непознат"
 
-#: src/audio_output.cpp:111
+#: src/audio_output.cpp:135
 msgid "No OpenAL context available."
 msgstr "Няма наличен OpenAL контекст."
 
-#: src/audio_output.cpp:122
+#: src/audio_output.cpp:146
 msgid "Cannot create OpenAL buffers."
 msgstr "Не могат да бъдат създадени OpenAL буфери."
 
-#: src/audio_output.cpp:131
+#: src/audio_output.cpp:155
 msgid "Cannot create OpenAL source."
 msgstr "Не може да бъде създаден OpenAL източник."
 
-#: src/audio_output.cpp:144
+#: src/audio_output.cpp:168
 msgid "Cannot set OpenAL source parameters."
 msgstr "Параметрите на OpenAL източника не могат да бъдат зададени."
 
-#: src/audio_output.cpp:198
+#: src/audio_output.cpp:222
 msgid "Cannot check OpenAL source state."
 msgstr "Статуса на OpenAL източника не може да бъде проверен."
 
-#: src/audio_output.cpp:205
+#: src/audio_output.cpp:229
 msgid "Cannot restart OpenAL source playback."
 msgstr "Възпроизвеждането на OpenAL източника не може да бъде рестартирано."
 
-#: src/audio_output.cpp:358
+#: src/audio_output.cpp:406
 #, c-format
 msgid "No OpenAL format available for audio data format %s."
 msgstr "Няма наличен OpenAL формат за избрания звуков формат %s."
 
-#: src/audio_output.cpp:374
+#: src/audio_output.cpp:422
 msgid "Cannot set OpenAL audio volume."
 msgstr "Не може да се зададе нивото на OpenAL звука."
 
-#: src/audio_output.cpp:400
+#: src/audio_output.cpp:465
 msgid "Cannot buffer initial OpenAL data."
 msgstr "Не може да се буферират началните OpenAL данни."
 
-#: src/audio_output.cpp:414
+#: src/audio_output.cpp:479
 msgid "Cannot buffer OpenAL data."
 msgstr "OpenAL данните не могат да бъдат буферирани."
 
-#: src/audio_output.cpp:439
+#: src/audio_output.cpp:504
 msgid "Cannot start OpenAL source playback."
 msgstr "Възпроизвеждането на OpenAL източника не може да се стартира."
 
-#: src/audio_output.cpp:453
+#: src/audio_output.cpp:518
 msgid "Cannot pause OpenAL source playback."
 msgstr "Възпроизвеждането на OpenAL източника не може да се спре на пауза."
 
-#: src/audio_output.cpp:462
+#: src/audio_output.cpp:527
 msgid "Cannot unpause OpenAL source playback."
 msgstr "Възпроизвеждането на OpenAL източника не може да се пусне от пауза."
 
-#: src/audio_output.cpp:471
+#: src/audio_output.cpp:536
 msgid "Cannot stop OpenAL source playback."
 msgstr "Възпроизвеждането на OpenAL източника не може да се спре."
 
-#: src/audio_output.cpp:482
+#: src/audio_output.cpp:547
 msgid "Cannot unqueue OpenAL source buffers."
 msgstr "OpenAL буферите не могат да бъдат премахнати от опашката."
 
 #: src/command_file.cpp:63 src/command_file.cpp:79 src/command_file.cpp:125
-#: src/main.cpp:402 src/media_object.cpp:855 src/media_object.cpp:1339
+#: src/main.cpp:402 src/media_object.cpp:877 src/media_object.cpp:1362
 #: src/video_output.cpp:420
 #, c-format
 msgid "%s: %s"
@@ -281,7 +281,8 @@ msgid "%s version %s"
 msgstr "%s версия %s"
 
 #: src/main.cpp:415
-msgid "Copyright (C) 2014 the Bino developers."
+#, fuzzy
+msgid "Copyright (C) 2016 the Bino developers."
 msgstr "Всички права запазени (C) 2014 от разработчиците на Bino."
 
 #: src/main.cpp:416
@@ -876,111 +877,111 @@ msgstr "Стерео разположение: %s"
 msgid "%s video stream %d: Unsupported stereo layout %s."
 msgstr "%s видео поток %d: Неподдържана стереоскопична конфигурация %s."
 
-#: src/media_object.cpp:725
+#: src/media_object.cpp:727
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with %d channels."
 msgstr "%s аудио поток %d: Не може да се възпроизведе аудио с %d канал(и)."
 
-#: src/media_object.cpp:759
+#: src/media_object.cpp:781
 #, c-format
 msgid "%s audio stream %d: Cannot handle audio with sample format %s."
 msgstr ""
 "%s аудио поток %d: Не може да се възпроизведе аудио с формат на семплите %s."
 
-#: src/media_object.cpp:830
+#: src/media_object.cpp:852
 #, c-format
 msgid "No support available for %s device."
 msgstr "Няма поддръжка за устройство %s."
 
-#: src/media_object.cpp:831
+#: src/media_object.cpp:853
 msgid "Firewire"
 msgstr "Firewire"
 
-#: src/media_object.cpp:832
+#: src/media_object.cpp:854
 msgid "X11"
 msgstr "X11"
 
-#: src/media_object.cpp:833
+#: src/media_object.cpp:855
 msgid "default"
 msgstr "по подразбиране"
 
-#: src/media_object.cpp:866
+#: src/media_object.cpp:888
 #, c-format
 msgid "%s: Cannot read stream info: %s"
 msgstr "%s: Не може да се прочете информация за потока: %s"
 
-#: src/media_object.cpp:914
+#: src/media_object.cpp:936
 #, c-format
 msgid "%s stream %d: Cannot open %s: %s"
 msgstr "%s поток %d: Не може да се отвори %s: %s"
 
-#: src/media_object.cpp:915
+#: src/media_object.cpp:937
 msgid "video codec"
 msgstr "видео кодек"
 
-#: src/media_object.cpp:916
+#: src/media_object.cpp:938
 msgid "audio codec"
 msgstr "аудио кодек"
 
-#: src/media_object.cpp:917
+#: src/media_object.cpp:939
 msgid "subtitle codec"
 msgstr "кодек на субтитрите"
 
-#: src/media_object.cpp:918
+#: src/media_object.cpp:940
 msgid "data"
 msgstr "данни"
 
-#: src/media_object.cpp:919
+#: src/media_object.cpp:941
 msgid "codec not supported"
 msgstr "кодекът не се поддържа"
 
-#: src/media_object.cpp:929
+#: src/media_object.cpp:951
 #, c-format
 msgid "%s video stream %d: Invalid frame size."
 msgstr "%s видео поток %d: невалиден размер на кадъра."
 
-#: src/media_object.cpp:982
+#: src/media_object.cpp:1004
 #, c-format
 msgid "%s video stream %d: Cannot initialize conversion context."
 msgstr ""
 "%s видео поток %d: Не може да се инициализира контекста за конвертиране."
 
-#: src/media_object.cpp:1045
+#: src/media_object.cpp:1067
 #, c-format
 msgid "Video stream %d: %s / %s, %g seconds"
 msgstr "Видео поток %d: %s / %s, %g секунди"
 
-#: src/media_object.cpp:1049
+#: src/media_object.cpp:1071
 #, c-format
 msgid "Using up to %d threads for decoding."
 msgstr "Използване на максимум %d нишки за декодиране."
 
-#: src/media_object.cpp:1054
+#: src/media_object.cpp:1076
 #, c-format
 msgid "Audio stream %d: %s / %s, %g seconds"
 msgstr "Аудио поток %d: %s / %s, %g секунди"
 
-#: src/media_object.cpp:1061
+#: src/media_object.cpp:1083
 #, c-format
 msgid "Subtitle stream %d: %s / %s, %g seconds"
 msgstr "Поток със субтитри %d: %s / %s, %g секунди"
 
-#: src/media_object.cpp:1068
+#: src/media_object.cpp:1090
 msgid "No usable streams."
 msgstr "Няма използваеми потоци."
 
-#: src/media_object.cpp:1355 src/media_object.cpp:1385
-#: src/media_object.cpp:1415
+#: src/media_object.cpp:1378 src/media_object.cpp:1408
+#: src/media_object.cpp:1438
 #, c-format
 msgid "%s: Cannot duplicate packet."
 msgstr "%s: Пакетът не може да се дублира."
 
-#: src/media_object.cpp:1508
+#: src/media_object.cpp:1531
 #, c-format
 msgid "%s video stream %d: Dropping %dx%d frame"
 msgstr "%s видео поток %d: Отхвърляне на кадър %dx%d"
 
-#: src/media_object.cpp:1996
+#: src/media_object.cpp:2041
 #, c-format
 msgid "%s: Seeking failed."
 msgstr "%s: превъртането се провали."
