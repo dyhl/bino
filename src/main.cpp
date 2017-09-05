@@ -556,6 +556,7 @@ int main(int argc, char *argv[])
         dispatch_equalizer_3d = true;
         dispatch_gui = false;
     }
+	msg::inf(_("dispatch_equalizer is %d"), dispatch_equalizer);
 
 
 
@@ -574,6 +575,15 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(qt_msg_handler);
 #endif
 
+    // Bino+Equalizer needs to use a QCoreApplication() whereas the single app
+    // Bino version wants QApplication() in order to get QWidgets  [ben 29Jul16]
+    // class heirachy is: QObject => QCoreApplication => QGuiApplication => QApplication
+    // So let's define qt_app to be a QCoreApplication 
+    QCoreApplication *qt_app;
+    if ( dispatch_equalizer == true )
+        qt_app = new QCoreApplication(argc, argv, have_display);
+    else
+        qt_app = new QApplication(argc, argv, have_display);
 
 
 #if QT_VERSION < 0x050000
@@ -646,28 +656,6 @@ int main(int argc, char *argv[])
             dispatch_equalizer, dispatch_equalizer_3d, false,
             dispatch_gui, have_display, dispatch_log_level,
             dispatch_benchmark, dispatch_swap_interval);
-
-
-    // this section has been moved to after the options are processed.
-    // Qt inheritance looks like this:
-    // QObject => QCoreApplication => QGuiApplication => QApplication
-    // So let's define qt_app to be a QApplication 
-    QApplication *qt_app;
-    if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
-	QCoreApplication *qt_app = new QCoreApplication(argc, argv, have_display);
-    } else {
-	QApplication *qt_app = new QApplication(argc, argv, have_display);
-    }
-#if QT_VERSION < 0x050000
-    // Make Qt4 behave like Qt5: always interpret all C strings as UTF-8.
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-#endif
-    // Qt resets locale information in the QApplication constructor. Repair that.
-    setlocale(LC_ALL, "");
-    QCoreApplication::setOrganizationName("Bino");
-    QCoreApplication::setOrganizationDomain("bino3d.org");
-    QCoreApplication::setApplicationName(PACKAGE_NAME);
-
 
     /* List audio devices and exit, if requested */
     if (list_audio_devices.value())
