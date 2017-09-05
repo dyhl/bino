@@ -544,10 +544,7 @@ int main(int argc, char *argv[])
                 + "  " + lengthen(_("Media keys"), 25)         + _("Media keys should work as expected"));
     }
     if (version.value() || help.value())
-    {
-        delete qt_app;
         return 0;
-    }
 
 
     /* Find invariant parameters, required for dispatch initialization */
