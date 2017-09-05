@@ -149,11 +149,15 @@ DEFS += -DHTMLDIR=\"$(htmldir)\" -DLOCALEDIR=\"$(localedir)\"
 
 AM_CPPFLAGS = \
 	$(libavformat_CFLAGS) $(libavdevice_CFLAGS) $(libswscale_CFLAGS) $(libass_CFLAGS) \
-	$(libopenal_CFLAGS) $(libgl_CFLAGS) $(libglewmx_CFLAGS) $(libqtopengl_CFLAGS)
+	$(libopenal_CFLAGS) $(libgl_CFLAGS) $(libglewmx_CFLAGS) $(libglew_CFLAGS) $(libqtopengl_CFLAGS)
 
 bino_LDADD = $(top_builddir)/src/base/libbase.a $(LIBINTL) $(LIBICONV) \
 	$(libavformat_LIBS) $(libavdevice_LIBS) $(libswscale_LIBS) $(libass_LIBS) \
-	$(libopenal_LIBS) $(libgl_LIBS) $(libglewmx_LIBS) $(libqtopengl_LIBS)
+	$(libopenal_LIBS) $(libgl_LIBS) $(libglewmx_LIBS) $(libglew_LIBS) $(libqtopengl_LIBS)
+
+if HAVE_LIBGLEWMX
+AM_CPPFLAGS += -DGLEW_MX
+endif
 
 if HAVE_LIBEQUALIZER
 bino_SOURCES += player_equalizer.h player_equalizer.cpp
@@ -174,9 +178,10 @@ bino_SOURCES += logo/bino_logo.ico
 endif
 
 if HAVE_LIBXNVCTRL
-bino_SOURCES += NvSDIout.cpp NvSDIout.h NvSDIutils.cpp NvSDIutils.h
+bino_SOURCES += NvSDIout.cpp NvSDIout.h NvSDIutils.cpp NvSDIutils.h sdioutputdialog.cpp sdioutputdialog.h
 AM_CPPFLAGS += $(xnvctrl_CFLAGS)
-bino_LDADD += $(xnvctrl_LDFLAGS) -lXNVCtrl
+bino_LDADD += $(xnvctrl_LDFLAGS) -lXNVCtrl -lX11
+nodist_bino_SOURCES += sdioutputdialog-moc.cpp
 endif
 
 iconsdatadir = $(datadir)/icons/hicolor

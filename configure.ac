@@ -24,7 +24,7 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 dnl Autotools init stuff
 AC_PREREQ([2.63])
-AC_INIT([Bino], [1.6.2], [bino-list@nongnu.org], [bino], [http://bino3d.org/])
+AC_INIT([Bino], [1.6.5], [bino-list@nongnu.org], [bino], [http://bino3d.org/])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -119,11 +119,6 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])], [], [CPPFLAGS="$CPPFLAGS_bak"; LDFLAGS=
 dnl - str
 AM_ICONV([])
 AC_CHECK_FUNCS([nl_langinfo vasprintf wcswidth])
-AC_CHECK_TYPES([int128_t, uint128_t], [], [], [[#include <cstdint>]])
-AC_CHECK_TYPES([__int128, unsigned __int128])
-AC_CHECK_TYPES([__float128])
-AC_SEARCH_LIBS([strtoflt128], [quadmath])
-dnl TODO: define LONG_DOUBLE_IS_IEEE_754_QUAD on systems where this is true
 dnl - sys
 dnl AC_CHECK_FUNCS([nanosleep sysconf sched_yield])
 dnl - tmr
@@ -301,7 +296,9 @@ fi
 AC_DEFINE_UNQUOTED([HAVE_LIBEQUALIZER], [$HAVE_LIBEQUALIZER], [Have Equalizer?])
 AM_CONDITIONAL([HAVE_LIBEQUALIZER], [test "$HAVE_LIBEQUALIZER" = "1"])
 
-dnl glewmx
+dnl glew
+dnl With Equalizer, we need glewmx, since that is what Equalizer uses.
+dnl Without Equalizer, glew (without mx) is ok to use, too.
 PKG_CHECK_MODULES([libglewmx], [glewmx >= 1.6.0], [HAVE_LIBGLEWMX=1], [HAVE_LIBGLEWMX=0])
 if test "$HAVE_LIBGLEWMX" != "1"; then
     AC_MSG_WARN([required library libglewmx >= 1.6.0 not found:])
@@ -309,6 +306,15 @@ if test "$HAVE_LIBGLEWMX" != "1"; then
     AC_MSG_WARN([libglewmx is provided by glew; Debian package: libglewmx-dev])
 fi
 AM_CONDITIONAL([HAVE_LIBGLEWMX], [test "$HAVE_LIBGLEWMX" = "1"])
+if test "$HAVE_LIBGLEWMX" != "1" -a "$HAVE_LIBEQUALIZER" != "1"; then
+    AC_MSG_NOTICE([trying to use libglew instead of libglewmx])
+    PKG_CHECK_MODULES([libglew], [glew >= 1.6.0], [HAVE_LIBGLEW=1], [HAVE_LIBGLEW=0])
+    if test "$HAVE_LIBGLEW" != "1"; then
+        AC_MSG_WARN([required library libglew >= 1.6.0 not found:])
+        AC_MSG_WARN([$libglew_PKG_ERRORS])
+        AC_MSG_WARN([libglew is provided by glew; Debian package: libglew-dev])
+    fi
+fi
 
 dnl libXNVCtrl
 AC_ARG_WITH([xnvctrl],
@@ -318,7 +324,7 @@ if test "$xnvctrl" = "yes"; then
     CPPFLAGS_BAK="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS $libX11_CFLAGS $xnvctrl_CFLAGS"
     AC_SUBST([xnvctrl_CFLAGS])
-    AC_CHECK_HEADERS([NVCtrl.h NVCtrlLib.h],
+    AC_CHECK_HEADERS([NVCtrl/NVCtrl.h NVCtrl/NVCtrlLib.h],
                      [HAVE_LIBXNVCTRL=1],
                      [HAVE_LIBXNVCTRL=0],
                      [#include <GL/glx.h>])
@@ -330,13 +336,13 @@ if test "$xnvctrl" = "yes"; then
                      [XNVCTRLQueryAttribute],
                      [HAVE_LIBXNVCTRL=1],
                      [HAVE_LIBXNVCTRL=0],
-                     [$libX11_LIBS -lXext])
+                     [-lX11 -lXext])
         LDFLAGS="$LDFLAGS_BAK"
     fi
     CPPFLAGS="$CPPFLAGS_BAK"
     if test "$HAVE_LIBXNVCTRL" != "1"; then
         AC_MSG_WARN([optional library libXNVCtrl not found])
-        AC_MSG_WARN([libXNVCtrl is provided by NVIDIA; Ubuntu package: nvidia-settings])
+        AC_MSG_WARN([libXNVCtrl is provided by NVIDIA; Debian package: libxnvctrl-dev])
         xnvctrl="no"
     fi
 else
@@ -395,7 +401,7 @@ if test "$am_cv_func_iconv" != "yes" \
     -o "$HAVE_LIBASS" != "1" \
     -o "$HAVE_LIBOPENAL" != "1" \
     -o "$HAVE_LIBQTOPENGL" != "1" \
-    -o "$HAVE_LIBGLEWMX" != "1" \
+    -o \( "$HAVE_LIBGLEWMX" != "1" -a "$HAVE_LIBGLEW" != "1" \) \
     -o \( "$equalizer" = "yes" -a "$HAVE_LIBEQUALIZER" != "1" \) \
     -o \( "$xnvctrl" = "yes" -a "$HAVE_LIBXNVCTRL" != "1" \) \
     -o \( "$lirc" = "yes" -a "$HAVE_LIRC" != "1" \) ; then

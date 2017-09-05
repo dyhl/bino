@@ -27,8 +27,17 @@
 #include "config.h"
 
 #include <QLabel>
+#include <QComboBox>
+#include <QGridLayout>
 
 #include "sdioutputdialog.h"
+
+#include "gui_common.h"
+
+#if HAVE_LIBXNVCTRL
+#include <NVCtrl/NVCtrl.h>
+#include "NvSDIutils.h"
+#endif // HAVE_LIBXNVCTRL
 
 sdi_output_dialog::sdi_output_dialog(QWidget *parent) : QWidget(parent),
     _lock(false)
