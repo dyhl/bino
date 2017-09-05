@@ -52,9 +52,6 @@ $   ./configure --prefix=${HERE}/install          \
   --with-equalizer                                \
   libEqualizer_CFLAGS=-I${EQ}/include             \
   libEqualizer_LIBS=-L${EQ}/lib                   \
-  --with-xnvctrl                                  \
-  xnvctrl_CFLAGS=-I/usr/include/NVCtrl            \
-  xnvctrl_LDFLAGS=-L/usr/lib64                    \
   libopenal_CFLAGS=-I${OPENAL}/include/AL         \
   libopenal_LIBS=-L${OPENAL}/lib                  \
 
