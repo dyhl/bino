@@ -67,6 +67,7 @@
 #endif
 #include "lib_versions.h"
 
+#include <QSysInfo>
 
 /* Return the directory containing our locale data (translated messages). */
 static const char *localedir()
@@ -280,7 +281,35 @@ int main(int argc, char *argv[])
     options.push_back(&audio);
     opt::val<int> subtitle("subtitle", 's', opt::optional, 0, 999, 0);
     options.push_back(&subtitle);
-    opt::val<std::string> video_output_mode("output", 'o', opt::optional);
+    std::vector<std::string> video_output_modes;
+    video_output_modes.push_back("mono-left");
+    video_output_modes.push_back("mono-right");
+    video_output_modes.push_back("top-bottom");
+    video_output_modes.push_back("top-bottom-half");
+    video_output_modes.push_back("left-right");
+    video_output_modes.push_back("left-right-half");
+    video_output_modes.push_back("even-odd-rows");
+    video_output_modes.push_back("even-odd-columns");
+    video_output_modes.push_back("checkerboard");
+    video_output_modes.push_back("hdmi-frame-pack");
+    video_output_modes.push_back("red-cyan-monochrome");
+    video_output_modes.push_back("red-cyan-half-color");
+    video_output_modes.push_back("red-cyan-full-color");
+    video_output_modes.push_back("red-cyan-dubois");
+    video_output_modes.push_back("green-magenta-monochrome");
+    video_output_modes.push_back("green-magenta-half-color");
+    video_output_modes.push_back("green-magenta-full-color");
+    video_output_modes.push_back("green-magenta-dubois");
+    video_output_modes.push_back("amber-blue-monochrome");
+    video_output_modes.push_back("amber-blue-half-color");
+    video_output_modes.push_back("amber-blue-full-color");
+    video_output_modes.push_back("amber-blue-dubois");
+    video_output_modes.push_back("red-green-monochrome");
+    video_output_modes.push_back("red-blue-monochrome");
+    video_output_modes.push_back("stereo");
+    video_output_modes.push_back("equalizer");
+    video_output_modes.push_back("equalizer-3d");
+    opt::val<std::string> video_output_mode("output", 'o', opt::optional, video_output_modes, "");
     options.push_back(&video_output_mode);
     opt::flag swap_eyes("swap-eyes", 'S', opt::optional);
     options.push_back(&swap_eyes);
@@ -548,15 +577,16 @@ int main(int argc, char *argv[])
     if (audio_device.is_set())
         controller::send_cmd(command::set_audio_device, audio_device.value() - 1);
     if (video_output_mode.value() == "equalizer") {
+        msg::inf(_("Bino Video mode is equalizer."));
         dispatch_equalizer = true;
         dispatch_equalizer_3d = false;
         dispatch_gui = false;
     } else if (video_output_mode.value() == "equalizer-3d") {
+        msg::inf(_("Bino Video mode is equalizer-3d."));
         dispatch_equalizer = true;
         dispatch_equalizer_3d = true;
         dispatch_gui = false;
     }
-	msg::inf(_("dispatch_equalizer is %d"), dispatch_equalizer);
 
 
 
@@ -575,15 +605,21 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(qt_msg_handler);
 #endif
 
-    // Bino+Equalizer needs to use a QCoreApplication() whereas the single app
-    // Bino version wants QApplication() in order to get QWidgets  [ben 29Jul16]
-    // class heirachy is: QObject => QCoreApplication => QGuiApplication => QApplication
-    // So let's define qt_app to be a QCoreApplication 
-    QCoreApplication *qt_app;
-    if ( dispatch_equalizer == true )
-        qt_app = new QCoreApplication(argc, argv, have_display);
-    else
-        qt_app = new QApplication(argc, argv, have_display);
+
+
+#if HAVE_LIBEQUALIZER
+	// Bino Equalizer X11 Qt5.7 Clients need to "export QT_QPA_PLATFORM=offscreen"
+	// else we see the following error on remote client nodes:
+	//   bino: [err] QXcbConnection: Could not connect to display 
+	// Do this with qputenv() before the QApplication() call.
+    if (arguments.size() > 0 && arguments[0] == "--eq-client") {
+		msg::inf(_("set QT_QPA_PLATFORM = offscreen"));
+		qputenv( "QT_QPA_PLATFORM", "offscreen");
+	}
+#endif
+	
+
+    QApplication *qt_app = new QApplication(argc, argv, have_display);
 
 
 #if QT_VERSION < 0x050000
@@ -592,23 +628,9 @@ int main(int argc, char *argv[])
 #endif
     // Qt resets locale information in the QApplication constructor. Repair that.
     setlocale(LC_ALL, "");
-    if ( dispatch_equalizer == true ) {
-        QCoreApplication::setOrganizationName("Bino");
-        QCoreApplication::setOrganizationDomain("bino3d.org");
-        QCoreApplication::setApplicationName(PACKAGE_NAME);
-    } else {
-        QApplication::setOrganizationName("Bino");
-        QApplication::setOrganizationDomain("bino3d.org");
-        QApplication::setApplicationName(PACKAGE_NAME);
-    }
-
-
-
-
-
-
-
-
+    QApplication::setOrganizationName("Bino");
+    QApplication::setOrganizationDomain("bino3d.org");
+    QApplication::setApplicationName(PACKAGE_NAME);
 
 
 
@@ -618,6 +640,7 @@ int main(int argc, char *argv[])
         try
         {
             player_equalizer *player = new player_equalizer(&argc, argv, true);
+			// eq-client execution usually blocks here, until the end
             delete player;
         }
         catch (std::exception &e)
@@ -628,9 +651,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 #endif
-
-
-
 
 
     msg::level_t dispatch_log_level = msg::level();
@@ -835,11 +855,7 @@ int main(int argc, char *argv[])
             msg::err(_("This version of Bino was compiled without support for Equalizer."));
 #endif
         } else {
-			if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
-				QCoreApplication::exec();
-			} else {
-				QApplication::exec();
-			}
+            QApplication::exec();
         }
 #if HAVE_LIRC
         lirc.deinit();
