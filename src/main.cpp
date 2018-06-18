@@ -67,8 +67,6 @@
 #endif
 #include "lib_versions.h"
 
-#include <QSysInfo>
-
 /* Return the directory containing our locale data (translated messages). */
 static const char *localedir()
 {
@@ -201,9 +199,9 @@ int main(int argc, char *argv[])
     dbg::init_crashhandler();
 
 
-    // Moved Qt initialisation until after command-line handling.
-    // We need a different Qt init depending on whether we're using Equalizer
-    // which we learn from the command-line args. [ben 1AUG16]
+    // Moved Qt initialisation from here to now happen after command-line handling.
+    // This allows QT_QPA_PLATFORM to be set first, depending on whether Equalizer
+    // was specified in the command-line args.
 
 
     /* Command line handling */
@@ -608,16 +606,17 @@ int main(int argc, char *argv[])
 
 
 #if HAVE_LIBEQUALIZER
-	// Bino Equalizer X11 Qt5.7 Clients need to "export QT_QPA_PLATFORM=offscreen"
-	// else we see the following error on remote client nodes:
-	//   bino: [err] QXcbConnection: Could not connect to display 
-	// Do this with qputenv() before the QApplication() call.
+    //
+    // Bino Equalizer X11 Qt5.7 Clients need to "export QT_QPA_PLATFORM=offscreen"
+    // before constructing QApplication() else we see the following error
+    // on the remote client nodes:
+    //     bino: [err] QXcbConnection: Could not connect to display 
+    //
     if (arguments.size() > 0 && arguments[0] == "--eq-client") {
-		msg::inf(_("set QT_QPA_PLATFORM = offscreen"));
-		qputenv( "QT_QPA_PLATFORM", "offscreen");
-	}
+        msg::inf(_("set QT_QPA_PLATFORM = offscreen"));
+        qputenv( "QT_QPA_PLATFORM", "offscreen");
+    }
 #endif
-	
 
     QApplication *qt_app = new QApplication(argc, argv, have_display);
 
@@ -640,7 +639,7 @@ int main(int argc, char *argv[])
         try
         {
             player_equalizer *player = new player_equalizer(&argc, argv, true);
-			// eq-client execution usually blocks here, until the end
+            // nb. the eq-client execution usually blocks here, until the end
             delete player;
         }
         catch (std::exception &e)

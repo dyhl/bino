@@ -410,6 +410,7 @@ main_window::main_window(QSettings *settings) :
 #endif
 
     // Show window. Must happen before opening initial files!
+    // resize(1000,1000);
     show();
     raise();
 
