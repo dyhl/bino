@@ -133,6 +133,8 @@ if test "$am_cv_func_iconv" != "yes"; then
     AC_MSG_WARN([required library libiconv not found])
 fi
 AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.20])
+AM_GNU_GETTEXT_REQUIRE_VERSION([0.20])
 AC_LANG_POP([C])
 
 dnl pkg-config (required to detect libraries)
