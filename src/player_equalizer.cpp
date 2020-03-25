@@ -502,15 +502,15 @@ public:
         return eq::Config::startFrame(version);
     }
 
-    virtual bool handleEvent(const eq::ConfigEvent *event)
+    virtual bool handleEvent(const eq::EventType type, const eq::KeyEvent& event)
     {
-        if (eq::Config::handleEvent(event))
+        if (eq::Config::handleEvent(type, event))
         {
             return true;
         }
-        if (event->data.type == eq::Event::KEY_PRESS)
+        if (type == eq::EVENT_KEY_PRESS)
         {
-            switch (event->data.keyPress.key)
+            switch (event.key)
             {
             case 'S':
                 _eq_frame_data.display_statistics = !_eq_frame_data.display_statistics;
@@ -615,13 +615,18 @@ public:
                 break;
             }
         }
-        else if (event->data.type == eq::Event::CHANNEL_POINTER_BUTTON_RELEASE)
+        return true;
+    }
+
+    virtual bool handleEvent(const eq::EventType type, const eq::PointerEvent& event)
+    {
+        if (type == eq::EVENT_CHANNEL_POINTER_BUTTON_RELEASE)
         {
-            float event_px = event->data.pointerButtonRelease.x;        // Event position in pixels
-            float channel_pw = event->data.context.pvp.w;               // Channel width in pixels
-            float event_x = event_px / channel_pw;                      // Event position relative to channel
+            float event_px = event.x;                             // Event position in pixels
+            float channel_pw = event.context.pvp.w;               // Channel width in pixels
+            float event_x = event_px / channel_pw;                // Event position relative to channel
             // Event position relative to destination view (which seems to be the same as the canvas?)
-            float dest = event->data.context.vp.x + event_x * event->data.context.vp.w;
+            float dest = event.context.vp.x + event_x * event.context.vp.w;
             dest = std::min(std::max(dest, 0.0f), 1.0f);                // Clamp to [0,1] - just to be sure
             controller::send_cmd(command::set_pos, dest);               // Seek to this position
         }
@@ -656,7 +661,7 @@ private:
                 eq::Vector3f w = u.cross(v);
                 w.normalize();
 
-                const eq::Vector3f dot(w.dot(eq::Vector3f::FORWARD));
+                const eq::Vector3f dot(w.dot(eq::Vector3f::forward()));
                 const float val = dot.squared_length();
                 if (val < angle) // facing more away then previous segment
                 {
