@@ -927,8 +927,9 @@ void media_object::open(const std::string &url, const device_request &dev_reques
 #ifdef FF_API_LOWRES
             lowres = codec_ctx->lowres;
 #endif
-            if (lowres || (codec && (codec->capabilities & CODEC_CAP_DR1)))
-                codec_ctx->flags |= CODEC_FLAG_EMU_EDGE;
+            // CODEC_FLAG_EMU_EDGE deprecated.. 
+            // if (lowres || (codec && (codec->capabilities & AV_CODEC_CAP_DR1)))
+            //    codec_ctx->flags |= CODEC_FLAG_EMU_EDGE;
         }
         // Find and open the codec. AV_CODEC_ID_TEXT is a special case: it has no decoder since it is unencoded raw data.
         if (codec_ctx->codec_id != AV_CODEC_ID_TEXT && (!codec || (e = avcodec_open2(codec_ctx, codec, NULL)) < 0))
