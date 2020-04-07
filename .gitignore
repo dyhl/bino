@@ -13,12 +13,15 @@ configure
 *.swp
 *.o
 *~
+.vscode/
 doc/*.png
 doc/*.info
 doc/version.texi
 doc/stamp-vti
 doc/bino.html
+m4/
 pkg/macosx/Info.plist
+po/Makevars.template
 po/POTFILES
 po/remove-potcdate.sed
 po/stamp-po

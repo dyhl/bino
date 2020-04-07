@@ -618,8 +618,16 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    QApplication *qt_app = new QApplication(argc, argv, have_display);
-
+    // this section has been moved to after the options are processed.
+    // Qt inheritance looks like this:
+    // QObject => QCoreApplication => QGuiApplication => QApplication
+    // So let's define qt_app to be a QApplication 
+    QApplication *qt_app;
+    if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
+        QCoreApplication *qt_app = new QCoreApplication(argc, argv, have_display);
+    } else {
+        QApplication *qt_app = new QApplication(argc, argv, have_display);
+    }
 
 #if QT_VERSION < 0x050000
     // Make Qt4 behave like Qt5: always interpret all C strings as UTF-8.
@@ -854,7 +862,11 @@ int main(int argc, char *argv[])
             msg::err(_("This version of Bino was compiled without support for Equalizer."));
 #endif
         } else {
-            QApplication::exec();
+            if( dispatch_equalizer == true || dispatch_equalizer_3d == true) {
+	        QCoreApplication::exec();
+            } else {
+                QApplication::exec();
+            }
         }
 #if HAVE_LIRC
         lirc.deinit();

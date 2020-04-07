@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bino 1.4.4\n"
 "Report-Msgid-Bugs-To: bino-list@nongnu.org\n"
-"POT-Creation-Date: 2020-03-25 15:37+1100\n"
+"POT-Creation-Date: 2020-03-26 16:20+1100\n"
 "PO-Revision-Date: 2014-09-16 17:16+0800\n"
 "Last-Translator: Frank Hill <hxf.prc@gmail.com>\n"
 "Language-Team: Simplified Chinese\n"
@@ -236,7 +236,7 @@ msgstr "音轨 %d 未找到。"
 msgid "Subtitle stream %d not found."
 msgstr "字幕轨 %d 未找到。"
 
-#: src/dispatch.cpp:559 src/main.cpp:854
+#: src/dispatch.cpp:559 src/main.cpp:862
 msgid "This version of Bino was compiled without support for Equalizer."
 msgstr "此 Bino 版本编译时未加入 Equalizer 支持。"
 
@@ -810,20 +810,20 @@ msgstr ""
 msgid "set QT_QPA_PLATFORM = offscreen"
 msgstr ""
 
-#: src/main.cpp:685
+#: src/main.cpp:693
 msgid "No audio devices known."
 msgstr "无已知音频设备。"
 
-#: src/main.cpp:700
+#: src/main.cpp:708
 msgid "Benchmark mode: audio and time synchronization disabled."
 msgstr "性能测试模式：禁用音频和时间同步"
 
-#: src/main.cpp:714
+#: src/main.cpp:722
 #, c-format
 msgid "Unknown mode %s."
 msgstr "未知模式 %s。"
 
-#: src/main.cpp:846
+#: src/main.cpp:854
 msgid "This version of Bino was compiled without support for LIRC."
 msgstr "此 Bino 版本编译时启用了 LIRC 支持。"
 
@@ -1028,33 +1028,33 @@ msgstr "Equalizer 配置里无画布。"
 msgid "Equalizer canvas: %gx%g, aspect ratio %g:1"
 msgstr "Equalizer 画布：%gx%g，宽高比 %g:1"
 
-#: src/player_equalizer.cpp:741
+#: src/player_equalizer.cpp:736
 msgid "Init data mapping failed."
 msgstr "初始数据映射失败。"
 
-#: src/player_equalizer.cpp:747
+#: src/player_equalizer.cpp:742
 msgid "Frame data mapping failed."
 msgstr "帧数据映射失败。"
 
-#: src/player_equalizer.cpp:760
+#: src/player_equalizer.cpp:755
 msgid "Video player initialization failed."
 msgstr "视频播放器初始化失败。"
 
-#: src/player_equalizer.cpp:875
+#: src/player_equalizer.cpp:870
 msgid ""
 "This OpenGL implementation does not support OpenGL 2.1 and framebuffer "
 "objects."
 msgstr "此 OpenGL 实现不支持 OpenGL 2.1 和帧缓冲对象。"
 
-#: src/player_equalizer.cpp:1053
+#: src/player_equalizer.cpp:1048
 msgid "Equalizer initialization failed."
 msgstr "Equalizer 初始化失败。"
 
-#: src/player_equalizer.cpp:1061
+#: src/player_equalizer.cpp:1056
 msgid "Cannot get equalizer configuration."
 msgstr "无法获取 equalizer 配置"
 
-#: src/player_equalizer.cpp:1077
+#: src/player_equalizer.cpp:1072
 msgid "Equalizer configuration initialization failed."
 msgstr "Equalizer 配置初始化失败。"
 
