@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bino 0.9.2\n"
 "Report-Msgid-Bugs-To: bino-list@nongnu.org\n"
-"POT-Creation-Date: 2020-03-25 15:37+1100\n"
+"POT-Creation-Date: 2020-03-26 16:20+1100\n"
 "PO-Revision-Date: 2014-09-22 00:59+0600\n"
 "Last-Translator: Alexey Osipov <public@alexey.osipov.name>\n"
 "Language-Team: \n"
@@ -234,7 +234,7 @@ msgstr "Аудио дорожка %d не найдена."
 msgid "Subtitle stream %d not found."
 msgstr "Дорожка субтитров %d не найдена."
 
-#: src/dispatch.cpp:559 src/main.cpp:854
+#: src/dispatch.cpp:559 src/main.cpp:862
 msgid "This version of Bino was compiled without support for Equalizer."
 msgstr "Эта версия Bino была собрана без поддержки Equalizer."
 
@@ -809,22 +809,22 @@ msgstr ""
 msgid "set QT_QPA_PLATFORM = offscreen"
 msgstr ""
 
-#: src/main.cpp:685
+#: src/main.cpp:693
 msgid "No audio devices known."
 msgstr "Нет звуковых устройств."
 
-#: src/main.cpp:700
+#: src/main.cpp:708
 msgid "Benchmark mode: audio and time synchronization disabled."
 msgstr ""
 "Режим оценки производительности: воспроизведение аудио отключено, "
 "воспроизведение видео с максимально-возможной скоростью."
 
-#: src/main.cpp:714
+#: src/main.cpp:722
 #, c-format
 msgid "Unknown mode %s."
 msgstr "Неизвестный режим %s."
 
-#: src/main.cpp:846
+#: src/main.cpp:854
 msgid "This version of Bino was compiled without support for LIRC."
 msgstr "Эта версия Bino была собрана без поддержки LIRC."
 
@@ -1029,34 +1029,34 @@ msgstr "В конфигурации Equalizer отсутствует полот�
 msgid "Equalizer canvas: %gx%g, aspect ratio %g:1"
 msgstr "Полотно Equalizer: %gx%g, соотношение сторон %g:1"
 
-#: src/player_equalizer.cpp:741
+#: src/player_equalizer.cpp:736
 msgid "Init data mapping failed."
 msgstr "Подготовка разметки данных не удалась."
 
-#: src/player_equalizer.cpp:747
+#: src/player_equalizer.cpp:742
 msgid "Frame data mapping failed."
 msgstr "Разметка данных кадра не удалась."
 
-#: src/player_equalizer.cpp:760
+#: src/player_equalizer.cpp:755
 msgid "Video player initialization failed."
 msgstr "Ошибка инициализации видео плеера."
 
-#: src/player_equalizer.cpp:875
+#: src/player_equalizer.cpp:870
 msgid ""
 "This OpenGL implementation does not support OpenGL 2.1 and framebuffer "
 "objects."
 msgstr ""
 "Данная реализация OpenGL не поддерживает OpenGL 2.1 и объекты во фреймбуфере."
 
-#: src/player_equalizer.cpp:1053
+#: src/player_equalizer.cpp:1048
 msgid "Equalizer initialization failed."
 msgstr "Ошибка инициализации Equalizer."
 
-#: src/player_equalizer.cpp:1061
+#: src/player_equalizer.cpp:1056
 msgid "Cannot get equalizer configuration."
 msgstr "Невозможно получить конфигурацию Equalizer."
 
-#: src/player_equalizer.cpp:1077
+#: src/player_equalizer.cpp:1072
 msgid "Equalizer configuration initialization failed."
 msgstr "Ошибка инициализации конфигурации Equalizer."
 
