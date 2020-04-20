@@ -805,6 +805,19 @@ int main(int argc, char *argv[])
     input_data.dev_request.frame_rate_den = device_frame_rate.value()[1];
     if (device_format.value() == "mjpeg")
         input_data.dev_request.request_mjpeg = true;
+
+#if HAVE_LIBEQUALIZER
+    int i = 0;
+    // discard arguments after --eq-client..?
+    while (i < arguments.size()) {
+        if (arguments[i] == "--eq-client") {
+            break;
+        }
+        i++;
+    }
+    arguments.resize(i);
+#endif
+
     input_data.urls = arguments;
     if (video.is_set() > 0)
         input_data.params.set_video_stream(video.value() - 1);
