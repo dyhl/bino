@@ -612,9 +612,12 @@ int main(int argc, char *argv[])
     // on the remote client nodes:
     //     bino: [err] QXcbConnection: Could not connect to display 
     //
-    if (arguments.size() > 0 && arguments[0] == "--eq-client") {
-        msg::inf(_("set QT_QPA_PLATFORM = offscreen"));
-        qputenv( "QT_QPA_PLATFORM", "offscreen");
+    for (auto arg: arguments) {
+        if (arg == "--eq-client") {
+            msg::inf(_("set QT_QPA_PLATFORM = offscreen"));
+            qputenv( "QT_QPA_PLATFORM", "offscreen");
+            break;
+        }
     }
 #endif
 
@@ -642,20 +645,21 @@ int main(int argc, char *argv[])
 
 
 #if HAVE_LIBEQUALIZER
-    if (arguments.size() > 0 && arguments[0] == "--eq-client")
-    {
-        try
-        {
-            player_equalizer *player = new player_equalizer(&argc, argv, true);
-            // nb. the eq-client execution usually blocks here, until the end
-            delete player;
+    for (auto arg: arguments) {
+        if (arg == "--eq-client") {
+            try
+            {
+                player_equalizer *player = new player_equalizer(&argc, argv, true);
+                // nb. the eq-client execution usually blocks here, until the end
+                delete player;
+            }
+            catch (std::exception &e)
+            {
+                msg::err("%s", e.what());
+                return 1;
+            }
+            return 0;
         }
-        catch (std::exception &e)
-        {
-            msg::err("%s", e.what());
-            return 1;
-        }
-        return 0;
     }
 #endif
 
@@ -805,19 +809,6 @@ int main(int argc, char *argv[])
     input_data.dev_request.frame_rate_den = device_frame_rate.value()[1];
     if (device_format.value() == "mjpeg")
         input_data.dev_request.request_mjpeg = true;
-
-#if HAVE_LIBEQUALIZER
-    int i = 0;
-    // discard arguments after --eq-client..?
-    while (i < arguments.size()) {
-        if (arguments[i] == "--eq-client") {
-            break;
-        }
-        i++;
-    }
-    arguments.resize(i);
-#endif
-
     input_data.urls = arguments;
     if (video.is_set() > 0)
         input_data.params.set_video_stream(video.value() - 1);
